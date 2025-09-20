@@ -16,6 +16,12 @@ namespace api.Data
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+
+        public DbSet<Exercise> Exercises { get; set; }
+
+        public DbSet<Dailydata> Dailydatas { get; set; } 
+        
+        public DbSet<Trainingprogram> Trainingprograms { get; set; } 
             
         
     }
