@@ -6,6 +6,7 @@ using api.Data;
 using Microsoft.AspNetCore.Mvc;
 using api.Mappers;
 using api.Dtos.Dailydata;
+using Microsoft.EntityFrameworkCore;
 
 
 //a swaggerekhez
@@ -21,17 +22,17 @@ namespace api.Controllers
             _context = context;
         }
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var dailydatas = _context.Dailydatas.ToList()
-                .Select(s => s.ToDailydataDto());
+            var dailydatas = await _context.Dailydatas.ToListAsync();
+            var dailydataDto = dailydatas.Select(s => s.ToDailydataDto());
             return Ok(dailydatas);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var dailydata = _context.Dailydatas.Find(id);
+            var dailydata = await _context.Dailydatas.FindAsync(id);
             if (dailydata == null)
             {
                 return NotFound();
@@ -39,16 +40,49 @@ namespace api.Controllers
             return Ok(dailydata.ToDailydataDto());
         }
         [HttpPost]
-        public IActionResult Create([FromBody] CreateDailydataRequestTrueDto dailydataDto)
+        public async Task<IActionResult> Create([FromBody] CreateDailydataRequestTrueDto dailydataDto)
         {
 
             var dailydataModel = dailydataDto.ToDailydataFromCreateDto();
-            _context.Dailydatas.Add(dailydataModel);
-            _context.SaveChanges();
+            await _context.Dailydatas.AddAsync(dailydataModel);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new { id = dailydataModel.Id }, dailydataModel.ToDailydataDto());
-        }    
+        }
 
-        
+        [HttpPut]
+        [Route("{id}")]
+
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDailydataRequestDto updateDto)
+        {
+            var dailydataModel = await _context.Dailydatas.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (dailydataModel == null)
+            {
+                return NotFound();
+            }
+
+            dailydataModel.Date = updateDto.Date;
+            dailydataModel.Weight = updateDto.Weight;
+            dailydataModel.Dailykcalintake = updateDto.Dailykcalintake;
+            dailydataModel.Trainedtoday = updateDto.Trainedtoday;
+
+            await _context.SaveChangesAsync();
+            return Ok(dailydataModel.ToDailydataDto());
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var dailydataModel = await _context.Dailydatas.FirstOrDefaultAsync(x => x.Id == id);
+            if (dailydataModel == null)
+            {
+                return NotFound();
+            }
+            _context.Dailydatas.Remove(dailydataModel);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
        
     }
 }
