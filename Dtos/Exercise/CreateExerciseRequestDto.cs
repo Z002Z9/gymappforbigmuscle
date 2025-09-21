@@ -12,7 +12,7 @@ namespace api.Dtos.Exercise
         public string Youtubelink { get; set; } = string.Empty;       
         public int Setnumber { get; set; }
 
-        public int Repnumber { get; set; }              
+        public int Repnumber { get; set; }  
 
         
     }

@@ -1,0 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace api.Dtos.Trainingprogram
+{
+    public class CreateTrainingprogramRequestDto
+    {
+        
+        public string Name { get; set; } = string.Empty;
+        public string Plan { get; set; } = string.Empty;
+        public int Daysperweek { get; set; }
+        public int Kcalburned { get; set; }
+    }
+}

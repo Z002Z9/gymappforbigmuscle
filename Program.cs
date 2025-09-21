@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 builder.Services.AddScoped<IDailydataRepository, DailyDataRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+builder.Services.AddScoped<ITrainingprogramRepository, TrainingprogramRepository>();
 var app = builder.Build();
 
 // Configure middleware
