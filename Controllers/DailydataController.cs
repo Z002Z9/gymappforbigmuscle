@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using api.Mappers;
 using api.Dtos.Dailydata;
 using Microsoft.EntityFrameworkCore;
+using api.Interfaces;
 
 
-//a swaggerekhez
+//a swaggerekhez 
 namespace api.Controllers
 {
     [Route("api/dailydata")]
@@ -17,14 +18,16 @@ namespace api.Controllers
     public class DailydataController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public DailydataController(ApplicationDBContext context)
+        private readonly IDailydataRepository _dailydataRepo;
+        public DailydataController(ApplicationDBContext context, IDailydataRepository dailydataRepo)
         {
+            _dailydataRepo = dailydataRepo;
             _context = context;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var dailydatas = await _context.Dailydatas.ToListAsync();
+            var dailydatas = await _dailydataRepo.GetAllAsync();
             var dailydataDto = dailydatas.Select(s => s.ToDailydataDto());
             return Ok(dailydatas);
         }
@@ -32,7 +35,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var dailydata = await _context.Dailydatas.FindAsync(id);
+            var dailydata = await _dailydataRepo.GetByIdAsync(id);
             if (dailydata == null)
             {
                 return NotFound();
@@ -44,8 +47,7 @@ namespace api.Controllers
         {
 
             var dailydataModel = dailydataDto.ToDailydataFromCreateDto();
-            await _context.Dailydatas.AddAsync(dailydataModel);
-            await _context.SaveChangesAsync();
+            await _dailydataRepo.CreateAsync(dailydataModel);
             return CreatedAtAction(nameof(GetById), new { id = dailydataModel.Id }, dailydataModel.ToDailydataDto());
         }
 
@@ -54,19 +56,14 @@ namespace api.Controllers
 
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDailydataRequestDto updateDto)
         {
-            var dailydataModel = await _context.Dailydatas.FirstOrDefaultAsync(x => x.Id == id);
+            var dailydataModel = await _dailydataRepo.UpdateAsync(id, updateDto);
 
             if (dailydataModel == null)
             {
                 return NotFound();
             }
 
-            dailydataModel.Date = updateDto.Date;
-            dailydataModel.Weight = updateDto.Weight;
-            dailydataModel.Dailykcalintake = updateDto.Dailykcalintake;
-            dailydataModel.Trainedtoday = updateDto.Trainedtoday;
-
-            await _context.SaveChangesAsync();
+            
             return Ok(dailydataModel.ToDailydataDto());
         }
 
@@ -74,13 +71,13 @@ namespace api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var dailydataModel = await _context.Dailydatas.FirstOrDefaultAsync(x => x.Id == id);
+            var dailydataModel = await _dailydataRepo.DeleteAsync(id);
             if (dailydataModel == null)
             {
                 return NotFound();
             }
-            _context.Dailydatas.Remove(dailydataModel);
-            await _context.SaveChangesAsync();
+            
+
             return NoContent();
         }
        

@@ -1,4 +1,6 @@
 using api.Data;
+using api.Interfaces;
+using api.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 
 
+
+builder.Services.AddScoped<IDailydataRepository, DailyDataRepository>();
 var app = builder.Build();
 
 // Configure middleware
