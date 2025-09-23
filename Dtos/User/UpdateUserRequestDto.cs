@@ -7,9 +7,9 @@ namespace gymappforbigmuscle.Dtos.User
 {
     public class UpdateUserRequestDto
     {
-         public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;        
+        public string Password { get; set; } = string.Empty;
         public int Age { get; set; }
 
         public int Height { get; set; }
@@ -23,5 +23,9 @@ namespace gymappforbigmuscle.Dtos.User
         public string Trainingtype { get; set; } = string.Empty;
 
         public int Trainingsperweek { get; set; }
+
+        public int Weight { get; set; }
+        
+        public string Gender { get; set; } = string.Empty;
     }
 }

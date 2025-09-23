@@ -27,7 +27,9 @@ namespace gymappforbigmuscle.Mappers
                 Allergys = userModel.Allergys,
                 Kcalintake = userModel.Kcalintake,
                 Trainingtype = userModel.Trainingtype,
-                Trainingsperweek = userModel.Trainingsperweek
+                Trainingsperweek = userModel.Trainingsperweek,
+                Weight = userModel.Weight,
+                Gender = userModel.Gender
             };
         }
 

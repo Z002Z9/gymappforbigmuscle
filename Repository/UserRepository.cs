@@ -68,6 +68,8 @@ namespace gymappforbigmuscle.Repository
             existingUser.Kcalintake = userDto.Kcalintake;
             existingUser.Trainingtype = userDto.Trainingtype;
             existingUser.Trainingsperweek = userDto.Trainingsperweek;
+            existingUser.Weight = userDto.Weight;
+            existingUser.Gender = userDto.Gender;
 
 
 

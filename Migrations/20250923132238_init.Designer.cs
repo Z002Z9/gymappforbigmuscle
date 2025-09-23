@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250922163649_init")]
+    [Migration("20250923132238_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -151,6 +151,10 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Height")
                         .HasColumnType("int");
 
@@ -178,6 +182,9 @@ namespace api.Migrations
                     b.Property<string>("Trainingtype")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Weight")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

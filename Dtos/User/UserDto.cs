@@ -8,7 +8,7 @@ namespace gymappforbigmuscle.Dtos.User
 {
     public class UserDto
     {
-        
+
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -30,5 +30,9 @@ namespace gymappforbigmuscle.Dtos.User
         public string Trainingtype { get; set; } = string.Empty;
 
         public int Trainingsperweek { get; set; }
+        
+        public int Weight { get; set; }
+        
+        public string Gender { get; set; } = string.Empty;
     }
 }

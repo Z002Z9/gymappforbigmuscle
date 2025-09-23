@@ -30,8 +30,12 @@ namespace api.Models
 
         public int Trainingsperweek { get; set; }
 
-        //weight kimaraddddddd
+        public int Weight { get; set; }
         
+        public string Gender { get; set; } = string.Empty;
+
+        
+
 
     }
 }

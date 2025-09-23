@@ -91,7 +91,9 @@ namespace api.Migrations
                     Allergys = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Kcalintake = table.Column<int>(type: "int", nullable: false),
                     Trainingtype = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Trainingsperweek = table.Column<int>(type: "int", nullable: false)
+                    Trainingsperweek = table.Column<int>(type: "int", nullable: false),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
