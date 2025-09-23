@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace api.Models
+namespace gymappforbigmuscle.Dtos.User
 {
-    public class User
+    public class UpdateUserRequestDto
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-
-        //ez osszekoti a rolelal
-        public int? RoleId { get; set; }
-        //ez meg kell hogy a roleon bellul tudjunk navigalni
-        public Role? Role { get; set; }
+        public string Password { get; set; } = string.Empty;        
         public int Age { get; set; }
 
         public int Height { get; set; }
@@ -29,9 +23,5 @@ namespace api.Models
         public string Trainingtype { get; set; } = string.Empty;
 
         public int Trainingsperweek { get; set; }
-
-        //weight kimaraddddddd
-        
-
     }
 }
