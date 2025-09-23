@@ -21,19 +21,21 @@ namespace api.Mappers
                 Setnumber = exerciseModel.Setnumber,
                 Repnumber = exerciseModel.Repnumber,
                 Injuryblacklist = exerciseModel.Injuryblacklist,
-                Bannedexercise = exerciseModel.Bannedexercise
+                Bannedexercise = exerciseModel.Bannedexercise,
+
             };
         }
 
         public static Exercise ToExerciseFromCreateDto(this CreateExerciseRequestDto exerciseDto)
         { 
             return new Exercise
-            {                
+            {
                 Name = exerciseDto.Name,
                 Mainmuscle = exerciseDto.Mainmuscle,
                 Youtubelink = exerciseDto.Youtubelink,
                 Setnumber = exerciseDto.Setnumber,
-                Repnumber = exerciseDto.Repnumber                   
+                Repnumber = exerciseDto.Repnumber,
+                Injuryblacklist = exerciseDto.Injuryblacklist,                   
                 
             };
 
