@@ -16,7 +16,7 @@ namespace gymappforbigmuscle.Dtos.User
         //ez osszekoti a rolelal
         public int? RoleId { get; set; }
         //ez meg kell hogy a roleon bellul tudjunk navigalni
-        public Role? Role { get; set; }
+        //public Role? Role { get; set; }
         public int Age { get; set; }
 
         public int Height { get; set; }

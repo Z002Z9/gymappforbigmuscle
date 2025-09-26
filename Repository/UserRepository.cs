@@ -41,15 +41,21 @@ namespace gymappforbigmuscle.Repository
             return userModel;
         }
 
-        public async Task<List<User>> GetAllAsync()
-        {
-            return await _context.Users.ToListAsync();
-        }
+         public async Task<List<User>> GetAllAsync()
+         {
+             return await _context.Users.ToListAsync();
+         }
 
-        public async Task<User?> GetByIdAsync(int id)
-        {
-            return await _context.Users.FindAsync(id);
-        }
+         public async Task<User?> GetByIdAsync(int id)
+         {
+             return await _context.Users.FindAsync(id);
+         }
+
+       
+
+
+
+
 
         public async Task<User?> UpdateAsync(int id, UpdateUserRequestDto userDto)
         {

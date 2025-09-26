@@ -30,7 +30,8 @@ namespace gymappforbigmuscle.Controllers
         {
             var users = await _userRepo.GetAllAsync();
             var userDto = users.Select(s => s.ToUserDto());
-            return Ok(users);
+
+            return Ok(userDto);
         }
 
         [HttpGet("{id}")]
