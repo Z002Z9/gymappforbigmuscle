@@ -1,23 +1,27 @@
+using api.Data;
+using api.Dtos.Dailydata;
+using api.Interfaces;
+using api.Mappers;
+using api.Models;
+using gymappforbigmuscle.Dtos.User;
+using gymappforbigmuscle.Interfaces;
+using gymappforbigmuscle.Mappers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using System.Threading.Tasks;
-using api.Data;
-using Microsoft.AspNetCore.Mvc; 
-using api.Mappers;
-using api.Dtos.Dailydata;
-using Microsoft.EntityFrameworkCore;
-using api.Interfaces;
-using gymappforbigmuscle.Interfaces;
-using gymappforbigmuscle.Dtos.User;
-using gymappforbigmuscle.Mappers;
+using System.Security.Claims;
 
 namespace gymappforbigmuscle.Controllers
 {
     [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
-    {   
+    {
         private readonly ApplicationDBContext _context;
         private readonly IUserRepository _userRepo;
         public UserController(ApplicationDBContext context, IUserRepository userRepo)
@@ -25,16 +29,26 @@ namespace gymappforbigmuscle.Controllers
             _userRepo = userRepo;
             _context = context;
         }
-        [HttpGet]
+
+        [HttpGet("ListAllUser")]
+
+        //   nem mûködik a role alapú auth
+        //   [Authorize(Roles = "1,2")]
+
         public async Task<IActionResult> GetAll()
         {
+
             var users = await _userRepo.GetAllAsync();
+
             var userDto = users.Select(s => s.ToUserDto());
+
 
             return Ok(userDto);
         }
 
-        [HttpGet("{id}")]
+
+        [HttpGet("ListUserByID/{id}")]
+        // [Authorize(Roles = "1")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var user = await _userRepo.GetByIdAsync(id);
@@ -44,17 +58,20 @@ namespace gymappforbigmuscle.Controllers
             }
             return Ok(user.ToUserDto());
         }
-        [HttpPost]
+        [HttpPost("Registration")]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {
 
             var userModel = userDto.ToUserFromCreateDto();
+
+            var hasher = new PasswordHasher<User>();
+            userModel.Password = hasher.HashPassword(userModel, userModel.Password);
+
             await _userRepo.CreateAsync(userModel);
             return CreatedAtAction(nameof(GetById), new { id = userModel.Id }, userModel.ToUserDto());
         }
 
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("EditUserByID{id}")]
 
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
         {
@@ -65,12 +82,14 @@ namespace gymappforbigmuscle.Controllers
                 return NotFound();
             }
 
-            
+
             return Ok(userModel.ToUserDto());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("DeleteUserByID/{id}")]
+        //ha egyszerre van httpdelete, majd benne egy útvonal leírás("DeleteUserByID") és külön egy route, akkor api hibát okoz
+
+
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var userModel = await _userRepo.DeleteAsync(id);
@@ -78,7 +97,7 @@ namespace gymappforbigmuscle.Controllers
             {
                 return NotFound();
             }
-            
+
 
             return NoContent();
         }

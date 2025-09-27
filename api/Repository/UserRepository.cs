@@ -51,11 +51,10 @@ namespace gymappforbigmuscle.Repository
              return await _context.Users.FindAsync(id);
          }
 
-       
-
-
-
-
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
 
         public async Task<User?> UpdateAsync(int id, UpdateUserRequestDto userDto)
         {

@@ -16,6 +16,7 @@ namespace gymappforbigmuscle.Mappers
         {
             return new UserDto
             {
+                Id= userModel.Id,
                 Name = userModel.Name,
                 Email = userModel.Email,
                 Password = userModel.Password,
