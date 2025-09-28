@@ -46,7 +46,7 @@ namespace gymappforbigmuscle.Controllers
 
 
         [HttpGet("ListUserByID/{id}")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var user = await _userRepo.GetByIdAsync(id);
@@ -70,7 +70,7 @@ namespace gymappforbigmuscle.Controllers
         }
 
         [HttpPut("EditUserByID{id}")]
-        //azt kéne megcsinálni, hogy csak mindenki csak a saját userét tudja szerkeszteni,az admin bárkiét
+        //azt kï¿½ne megcsinï¿½lni, hogy csak mindenki csak a sajï¿½t userï¿½t tudja szerkeszteni,az admin bï¿½rkiï¿½t
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
         {
             var userModel = await _userRepo.UpdateAsync(id, updateDto);
@@ -81,12 +81,17 @@ namespace gymappforbigmuscle.Controllers
             }
 
 
+
+
+            var hasher = new PasswordHasher<User>();
+            userModel.Password = hasher.HashPassword(userModel, userModel.Password);
+
             return Ok(userModel.ToUserDto());
         }
 
         [HttpDelete("DeleteUserByID/{id}")]
-        //ha egyszerre van httpdelete, majd benne egy útvonal leírás("DeleteUserByID") és külön egy route, akkor api hibát okoz
-        [Authorize(Roles = "1")] //feltételezzük a user nem akarja törölni magát?
+        //ha egyszerre van httpdelete, majd benne egy ï¿½tvonal leï¿½rï¿½s("DeleteUserByID") ï¿½s kï¿½lï¿½n egy route, akkor api hibï¿½t okoz
+        [Authorize(Roles = "1")] //feltï¿½telezzï¿½k a user nem akarja tï¿½rï¿½lni magï¿½t?
 
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
