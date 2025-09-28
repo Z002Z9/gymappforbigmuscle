@@ -30,7 +30,7 @@ namespace api.Controllers
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
 
-            Console.WriteLine(user != null ? $"User found: {user.Email}" : "User not found");
+           // Console.WriteLine(user != null ? $"User found: {user.Email}" : "User not found");
 
             if (user == null)
                 return Unauthorized();
@@ -39,7 +39,7 @@ namespace api.Controllers
             var hasher = new PasswordHasher<User>();
             var result = hasher.VerifyHashedPassword(user, user.Password, request.Password);
 
-            Console.WriteLine($"Password verification result: {result}"); //csak hogy látszódjon debugban sikerült-e 
+         //   Console.WriteLine($"Password verification result: {result}"); 
 
             if (result != PasswordVerificationResult.Success)
                 return Unauthorized();
@@ -47,11 +47,9 @@ namespace api.Controllers
             var role = user.Role != null ? user.Role.Name : "user";
             var username = user.Name != null ? user.Name : "";
 
-            return Ok(new
-            {
-                Token = GenerateJwtToken(user),
-
-            });
+            var token = GenerateJwtToken(user);
+           // Console.WriteLine($"Generated JWT token: {token}");
+            return Ok(new { Token = token });
         }
 
         private string GenerateJwtToken(User user)
@@ -61,7 +59,6 @@ namespace api.Controllers
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Name ?? ""),
                new Claim(ClaimTypes.Role, user.RoleId.ToString()),
-
 
         };
 

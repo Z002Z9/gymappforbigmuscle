@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register services
+// Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,12 +42,29 @@ builder.Services.AddAuthentication("Bearer")
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
+
+      /* áthúzza, de azért nem törlöm ki
+        options.SecurityTokenValidators.Clear();
+        options.SecurityTokenValidators.Add(new JwtSecurityTokenHandler());
+      */
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine(">>> JWT Authentication failed:");
+                Console.WriteLine(context.Exception);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine(">>> JWT Token validated successfully.");
+                return Task.CompletedTask;
+            }
+        };
     });
 
-var key = builder.Configuration["Jwt:Key"];
-var issuer = builder.Configuration["Jwt:Issuer"];
-var audience = builder.Configuration["Jwt:Audience"];
 
+// Swagger Bearer auth
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -72,7 +91,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 var app = builder.Build();
 
 
@@ -82,12 +100,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($">>> Request: {context.Request.Method} {context.Request.Path}");
+    if (context.Request.Headers.ContainsKey("Authorization"))
+        Console.WriteLine($">>> Authorization: {context.Request.Headers["Authorization"]}");
+    else
+        Console.WriteLine(">>> Nincs Authorization header!");
+
+    await next.Invoke();
+
+    Console.WriteLine($">>> Response status: {context.Response.StatusCode}");
+});
+
 app.UseHttpsRedirection();
-
-
-app.UseAuthentication();   
-app.UseAuthorization();    
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

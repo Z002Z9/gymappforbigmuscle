@@ -31,9 +31,7 @@ namespace gymappforbigmuscle.Controllers
         }
 
         [HttpGet("ListAllUser")]
-
-        //   nem mûködik a role alapú auth
-        //   [Authorize(Roles = "1,2")]
+        [Authorize(Roles = "1")]
 
         public async Task<IActionResult> GetAll()
         {
@@ -48,7 +46,7 @@ namespace gymappforbigmuscle.Controllers
 
 
         [HttpGet("ListUserByID/{id}")]
-        // [Authorize(Roles = "1")]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var user = await _userRepo.GetByIdAsync(id);
@@ -72,7 +70,7 @@ namespace gymappforbigmuscle.Controllers
         }
 
         [HttpPut("EditUserByID{id}")]
-
+        //azt kéne megcsinálni, hogy csak mindenki csak a saját userét tudja szerkeszteni,az admin bárkiét
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
         {
             var userModel = await _userRepo.UpdateAsync(id, updateDto);
@@ -88,7 +86,7 @@ namespace gymappforbigmuscle.Controllers
 
         [HttpDelete("DeleteUserByID/{id}")]
         //ha egyszerre van httpdelete, majd benne egy útvonal leírás("DeleteUserByID") és külön egy route, akkor api hibát okoz
-
+        [Authorize(Roles = "1")] //feltételezzük a user nem akarja törölni magát?
 
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
