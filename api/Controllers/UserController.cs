@@ -69,25 +69,30 @@ namespace gymappforbigmuscle.Controllers
             return CreatedAtAction(nameof(GetById), new { id = userModel.Id }, userModel.ToUserDto());
         }
 
-        [HttpPut("EditUserByID{id}")]
-        //azt k�ne megcsin�lni, hogy csak mindenki csak a saj�t user�t tudja szerkeszteni,az admin b�rki�t
+        [HttpPut("EditUserByID/{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
         {
-            var userModel = await _userRepo.UpdateAsync(id, updateDto);
-
-            if (userModel == null)
+            var user = await _userRepo.GetByIdAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
+            // Only hash if a new password is provided
+            if (!string.IsNullOrEmpty(updateDto.Password))
+            {
+                var hasher = new PasswordHasher<User>();
+                user.Password = hasher.HashPassword(user, updateDto.Password);
+            }
 
+            user.Name = updateDto.Name; // update other fields
+            user.Email = updateDto.Email;
 
+            await _context.SaveChangesAsync();
 
-            var hasher = new PasswordHasher<User>();
-            userModel.Password = hasher.HashPassword(userModel, userModel.Password);
-
-            return Ok(userModel.ToUserDto());
+            return Ok(user.ToUserDto());
         }
+
 
         [HttpDelete("DeleteUserByID/{id}")]
         //ha egyszerre van httpdelete, majd benne egy �tvonal le�r�s("DeleteUserByID") �s k�l�n egy route, akkor api hib�t okoz
