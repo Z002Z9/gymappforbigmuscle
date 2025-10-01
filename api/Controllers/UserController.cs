@@ -78,14 +78,14 @@ namespace gymappforbigmuscle.Controllers
                 return NotFound();
             }
 
-            // Only hash if a new password is provided
+            
             if (!string.IsNullOrEmpty(updateDto.Password))
             {
                 var hasher = new PasswordHasher<User>();
                 user.Password = hasher.HashPassword(user, updateDto.Password);
             }
 
-            user.Name = updateDto.Name; // update other fields
+            user.Name = updateDto.Name; 
             user.Email = updateDto.Email;
 
             await _context.SaveChangesAsync();
