@@ -16,6 +16,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Services
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowFrontend",
+                      builder =>
+                      {
+                          // IMPORTANT: Specify the exact URL of your React application
+                          builder.WithOrigins("http://localhost:3000")
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -107,6 +120,7 @@ if (app.Environment.IsDevelopment())
 
 app.Use(async (context, next) =>
 {
+
     Console.WriteLine($">>> Request: {context.Request.Method} {context.Request.Path}");
     if (context.Request.Headers.ContainsKey("Authorization"))
         Console.WriteLine($">>> Authorization: {context.Request.Headers["Authorization"]}");
@@ -117,6 +131,8 @@ app.Use(async (context, next) =>
 
     Console.WriteLine($">>> Response status: {context.Response.StatusCode}");
 });
+
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
