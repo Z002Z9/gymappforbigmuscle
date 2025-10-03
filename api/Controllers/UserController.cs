@@ -87,6 +87,15 @@ namespace gymappforbigmuscle.Controllers
 
             user.Name = updateDto.Name; 
             user.Email = updateDto.Email;
+            user.Age = updateDto.Age;
+            user.Height = updateDto.Height;
+            user.Weight = updateDto.Weight;
+            user.Gender = updateDto.Gender;
+            user.Trainingsperweek = updateDto.Trainingsperweek;
+            user.Injury = updateDto.Injury;
+            user.Allergys = updateDto.Allergys;
+            user.Trainingtype = updateDto.Trainingtype;
+            user.Kcalintake = updateDto.Kcalintake;
 
             await _context.SaveChangesAsync();
 
