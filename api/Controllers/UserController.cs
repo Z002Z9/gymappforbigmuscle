@@ -46,16 +46,29 @@ namespace gymappforbigmuscle.Controllers
 
 
         [HttpGet("ListUserByID/{id}")]
-        [Authorize(Roles = "1,2")]
+        [Authorize(Roles = "1,2")] 
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            // kiszedjük az id-t 
+            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserIdClaim == null)
+                return Unauthorized();
+
+            var currentUserId = int.Parse(currentUserIdClaim);
+
+            //az admin bárkiét lekérdezheti, a user meg csak a sajátját
+            if (!User.IsInRole("1") && id != currentUserId)
+            {
+                return Forbid();
+            }
+
             var user = await _userRepo.GetByIdAsync(id);
             if (user == null)
-            {
                 return NotFound();
-            }
+
             return Ok(user.ToUserDto());
         }
+
         [HttpPost("Registration")]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {
@@ -70,8 +83,20 @@ namespace gymappforbigmuscle.Controllers
         }
 
         [HttpPut("EditUserByID/{id}")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
         {
+            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserIdClaim == null)
+                return Unauthorized();
+
+            var currentUserId = int.Parse(currentUserIdClaim);
+
+            //az admin bárkiét szerkesztheti, a user meg csak a sajátját
+            if (!User.IsInRole("1") && id != currentUserId)
+            {
+                return Forbid();
+            }
             var user = await _userRepo.GetByIdAsync(id);
             if (user == null)
             {
@@ -105,10 +130,24 @@ namespace gymappforbigmuscle.Controllers
 
         [HttpDelete("DeleteUserByID/{id}")]
         //ha egyszerre van httpdelete, majd benne egy �tvonal le�r�s("DeleteUserByID") �s k�l�n egy route, akkor api hib�t okoz
-        [Authorize(Roles = "1")] //felt�telezz�k a user nem akarja t�r�lni mag�t?
+        [Authorize(Roles = "1,2")]
 
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+
+            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserIdClaim == null)
+                return Unauthorized();
+
+            var currentUserId = int.Parse(currentUserIdClaim);
+
+            //az admin bárkiét törölheti, a user meg csak a sajátját
+            if (!User.IsInRole("1") && id != currentUserId)
+            {
+                return Forbid();
+            }
+
+
             var userModel = await _userRepo.DeleteAsync(id);
             if (userModel == null)
             {

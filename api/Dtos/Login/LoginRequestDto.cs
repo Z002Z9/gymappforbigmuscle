@@ -1,11 +1,11 @@
-﻿namespace api.Dtos.Login
+﻿
+namespace api.Dtos.Login
 {
     public class LoginRequestDto
     {
-        
+
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-    }
 
-   
-}
+    }
+};

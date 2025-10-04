@@ -81,6 +81,7 @@ builder.Services.AddAuthentication("Bearer")
 // Swagger Bearer auth
 builder.Services.AddSwaggerGen(c =>
 {
+    
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 {
     Name = "Authorization",
@@ -131,6 +132,11 @@ app.Use(async (context, next) =>
 
     Console.WriteLine($">>> Response status: {context.Response.StatusCode}");
 });
+
+
+
+
+
 
 app.UseCors("AllowFrontend");
 

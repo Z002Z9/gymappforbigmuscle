@@ -21,8 +21,11 @@ namespace api.Data
 
         public DbSet<Dailydata> Dailydatas { get; set; } 
         
-        public DbSet<Trainingprogram> Trainingprograms { get; set; } 
-            
-        
+        public DbSet<Trainingprogram> Trainingprograms { get; set; }
+
+
+       public DbSet<TokenUpdater> TokenUpdate { get; set; }
+
+
     }
 }
