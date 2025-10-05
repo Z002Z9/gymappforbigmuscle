@@ -1,66 +1,21 @@
-/* import React from 'react';
-import logo from './logo.svg';
-import './CSS_files/App.css';
+import "@mantine/core/styles.css";
+import { MantineProvider } from "@mantine/core";
+import { theme } from "./theme";
+import {BrowserRouter} from "react-router-dom";
+import { AuthContext } from "./context/AuthContext";
+import Routing from "./routing/Routing.tsx";
+import {useState} from "react";
+import {emailKeyName, tokenKeyName} from "./constants/constants.ts";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+  const [token, setToken] = useState(localStorage.getItem(tokenKeyName));
+  const [email, setEmail] = useState(localStorage.getItem(emailKeyName));
+
+  return <MantineProvider theme={theme}>
+    <BrowserRouter>
+      <AuthContext.Provider value={{ token, setToken, email, setEmail }}>
+        <Routing/>
+      </AuthContext.Provider>
+    </BrowserRouter>
+  </MantineProvider>;
 }
-
-export default App; */
-// src/TSX_files/App.tsx
-
-import React, { useState } from 'react';
-//import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './components/CSS_files/App.css'; // You can keep your existing styles
-import { LoginPage } from './components/TSX_files/LoginPage';
-
-import { Dashboard } from './components/TSX_files/Dashboard';
-
-function App() {
-    // Store the authentication token in state. It's either a string or null.
-    const [authToken, setAuthToken] = useState<string | null>(null);
-
-    // This function will be called from LoginPage on success
-    const handleLoginSuccess = (token: string) => {
-        setAuthToken(token);
-        // In a real app, you'd likely save the token to localStorage as well
-        // localStorage.setItem('authToken', token);
-    };
-
-    // This function logs the user out
-    const handleLogout = () => {
-        setAuthToken(null);
-        // localStorage.removeItem('authToken');
-    };
-
-    return (
-        <div className="App">
-            <header className="App-header">
-                {/* We use conditional rendering here */}
-                {!authToken ? (
-                    <LoginPage onLoginSuccess={handleLoginSuccess} />
-                ) : (
-                    <Dashboard onLogout={handleLogout} />
-                )}
-            </header>
-        </div>
-    );
-}
-export default App;

@@ -81,16 +81,16 @@ builder.Services.AddAuthentication("Bearer")
 // Swagger Bearer auth
 builder.Services.AddSwaggerGen(c =>
 {
-    
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-{
-    Name = "Authorization",
-    Type = SecuritySchemeType.Http,
-    Scheme = "bearer",
-    BearerFormat = "JWT",
-    In = ParameterLocation.Header,
-    Description = "Enter only the JWT token. 'Bearer' will be added automatically."
-});
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter only the JWT token. 'Bearer' will be added automatically."
+    });
 
 
     c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
@@ -109,7 +109,21 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowFrontend",
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://localhost:5173") 
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
+
+
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 
 if (app.Environment.IsDevelopment())
