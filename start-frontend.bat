@@ -1,4 +1,4 @@
 @echo off
-cd ..\GymApp\frontend
+cd ..\gymappforbigmuscle\frontend
 npm start
 
