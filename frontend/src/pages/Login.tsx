@@ -39,7 +39,7 @@ const Login = () => {
                     <TextInput
                         required
                         label="E-mail cím"
-                        placeholder="hello@mantine.dev"
+                        placeholder="nev@gmail.com"
                         key={form.key('email')}
                         radius="md"
                         {...form.getInputProps('email')}
@@ -48,7 +48,7 @@ const Login = () => {
                     <PasswordInput
                         required
                         label="Jelszó"
-                        placeholder="Jelszavad"
+                        placeholder="Jelszo"
                         key={form.key('password')}
                         radius="md"
                         {...form.getInputProps('password')}

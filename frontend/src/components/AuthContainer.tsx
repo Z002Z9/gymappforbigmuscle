@@ -6,11 +6,11 @@ interface AuthContainerInterface {
 
 const AuthContainer = ({children}: AuthContainerInterface) => {
     return <div className="auth-container">
-        <Center><Image src="/logo.png" alt="img" w={150} mt={30}/></Center>
+        <Center><Image src="/logo.png" alt="img" w={250} mt={50}/></Center>
         <Center>
             <Paper radius="md" p="xl" withBorder maw={600} m={10}>
                 <Text size="lg" fw={500}>
-                    Üdvözlünk a Netpincér felületen
+                    Üdvözlünk a Gymapp for big muscle felületén!
                 </Text>
                 <Divider my="lg"/>
                 {children}

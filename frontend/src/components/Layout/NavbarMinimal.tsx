@@ -3,7 +3,10 @@ import {rem, Button, useMantineTheme} from "@mantine/core";
 import {
     IconUserCircle,
     IconLogout,
-    IconHome
+    IconHome,
+    IconGitCherryPick,
+    IconLemon,
+    IconScale
 } from "@tabler/icons-react";
 import classes from "./NavbarMinimalColored.module.css";
 import {useNavigate} from "react-router-dom";
@@ -50,7 +53,7 @@ export function NavbarMinimal({toggle}: any) {
             url: "dashboard",
         },
         {
-            icon: IconUserCircle,
+            icon: IconLemon,
             label: "Kalóriaszámláló",
             url: "kcalcalculator",
 
