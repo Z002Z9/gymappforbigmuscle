@@ -54,12 +54,28 @@ namespace api.Controllers
             else
                 bmr = 10 * user.Weight + 6.25 * user.Height - 5 * user.Age - 161;
 
-            double activityFactor = user.Trainingsperweek switch
+
+            double activityFactor = 0;
+            if (user.Trainingsperweek == 0)
             {
-                <= 2 => 1.2,
-                <= 4 => 1.375,
-                _ => 1.55
-            };
+                activityFactor = 1.2;
+            }
+            else if (user.Trainingsperweek == 1 || user.Trainingsperweek == 2)
+            {
+                activityFactor = 1.375;
+            }
+            else if (user.Trainingsperweek == 3 || user.Trainingsperweek == 4)
+            {
+                activityFactor = 1.55;
+            }
+            else if (user.Trainingsperweek == 5 || user.Trainingsperweek == 6)
+            {
+                activityFactor = 1.725;
+            }
+            else if (user.Trainingsperweek >= 7)
+            {
+                activityFactor = 1.9;
+            }   
 
             var maintenanceCalories = bmr * activityFactor;
             int tmpkcal=Convert.ToInt32(Math.Round(maintenanceCalories));
@@ -88,12 +104,20 @@ namespace api.Controllers
 
             List<int> macros=new List<int>();
             //protein,zsir,szénhidrát
-            
-            macros.Add((int)Math.Ceiling(user.Kcalintake * 0.3)); 
-            macros.Add((int)Math.Floor(user.Kcalintake * 0.25));
-            macros.Add(user.Kcalintake - macros[0] - macros[1]);
+            double kcalintake=user.Kcalintake;
 
+            macros.Add((int)Math.Ceiling(kcalintake * 0.3 / 4)); //protein
             
+            
+            macros.Add((int)Math.Floor(kcalintake * 0.25 / 9));// zsir
+
+            double tmp1=kcalintake -(kcalintake * 0.3) - (kcalintake * 0.25);
+            
+            macros.Add((int)Math.Floor(tmp1 / 4)); //szénhidrát
+
+            //meg at kell valtani grammra
+
+
             return Ok(new { DailyMacros = macros });
         }
     }
