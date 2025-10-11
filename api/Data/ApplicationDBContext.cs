@@ -24,7 +24,7 @@ namespace api.Data
         public DbSet<Trainingprogram> Trainingprograms { get; set; }
 
 
-       public DbSet<TokenUpdater> TokenUpdate { get; set; }
+      
 
 
     }

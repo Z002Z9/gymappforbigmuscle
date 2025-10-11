@@ -11,27 +11,53 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.OpenApi.Models;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Services
 builder.Services.AddControllers();
 
+// --- CORS: csak egy policy ---
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "AllowFrontend",
-                      builder =>
-                      {
-                          // IMPORTANT: Specify the exact URL of your React application
-                          builder.WithOrigins("http://localhost:3000")
-                                 .AllowAnyHeader()
-                                 .AllowAnyMethod();
-                      });
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // a frontend címe
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter only the JWT token. 'Bearer' will be added automatically."
+    });
 
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// DbContext
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -57,10 +83,6 @@ builder.Services.AddAuthentication("Bearer")
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
 
-      /* ï¿½thï¿½zza, de azï¿½rt nem tï¿½rlï¿½m ki
-        options.SecurityTokenValidators.Clear();
-        options.SecurityTokenValidators.Add(new JwtSecurityTokenHandler());
-      */
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
@@ -77,65 +99,21 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-
-// Swagger Bearer auth
-builder.Services.AddSwaggerGen(c =>
-{
-
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter only the JWT token. 'Bearer' will be added automatically."
-    });
-
-
-    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "AllowFrontend",
-                      policy  =>
-                      {
-                          policy.WithOrigins("http://localhost:5173") 
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
-                      });
-});
-
-
 var app = builder.Build();
 
-app.UseCors("AllowFrontend");
 
+app.UseCors("AllowReactApp");
 
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-
+// middleware
 app.Use(async (context, next) =>
 {
-
     Console.WriteLine($">>> Request: {context.Request.Method} {context.Request.Path}");
     if (context.Request.Headers.ContainsKey("Authorization"))
         Console.WriteLine($">>> Authorization: {context.Request.Headers["Authorization"]}");
@@ -146,13 +124,6 @@ app.Use(async (context, next) =>
 
     Console.WriteLine($">>> Response status: {context.Response.StatusCode}");
 });
-
-
-
-
-
-
-app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

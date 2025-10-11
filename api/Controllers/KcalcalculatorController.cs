@@ -23,8 +23,8 @@ namespace api.Controllers
     [Route("api/[controller]")]
     public class KcalcalculatorController : ControllerBase
     {
-        private readonly ApplicationDBContext _context; 
-        
+        private readonly ApplicationDBContext _context;
+
         private readonly IUserRepository _userRepository;
 
 
@@ -35,6 +35,7 @@ namespace api.Controllers
         }
 
         [HttpGet("daily-calories")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> CalculateCalories()
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -75,18 +76,19 @@ namespace api.Controllers
             else if (user.Trainingsperweek >= 7)
             {
                 activityFactor = 1.9;
-            }   
+            }
 
             var maintenanceCalories = bmr * activityFactor;
-            int tmpkcal=Convert.ToInt32(Math.Round(maintenanceCalories));
+            int tmpkcal = Convert.ToInt32(Math.Round(maintenanceCalories));
             user.Kcalintake = tmpkcal;
             await _context.SaveChangesAsync();
 
 
             return Ok(new { DailyCalories = tmpkcal });
         }
-        
+
         [HttpGet("dailymacrosget")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> Dailymacrosget()
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));

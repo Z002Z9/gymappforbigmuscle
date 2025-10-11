@@ -68,7 +68,7 @@ namespace api.Controllers
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Name ?? ""),
-               new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+                new Claim(ClaimTypes.Role, user.RoleId.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
 
         };
@@ -80,91 +80,13 @@ namespace api.Controllers
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddSeconds(30),
+                expires: DateTime.UtcNow.AddMinutes(70),
                 signingCredentials: creds
             );
             Console.WriteLine($"Token expires at (Local): {token.ValidTo.ToLocalTime()}");
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        [HttpPost("TokenUpdate")]
-          public async Task<TokenUpdater> GenerateRefreshToken(string userId)
-          {
-              // JWT létrehozása
-              var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
-              var tokenHandler = new JwtSecurityTokenHandler();
-
-              var claims = new[]
-              {
-                  new Claim(ClaimTypes.NameIdentifier, userId)
-              };
-
-              var tokenDescriptor = new SecurityTokenDescriptor
-              {
-                  Subject = new ClaimsIdentity(claims),
-                  Expires = DateTime.UtcNow.AddHours(1),
-                  SigningCredentials = new SigningCredentials(
-                      new SymmetricSecurityKey(key),
-                      SecurityAlgorithms.HmacSha256Signature)
-              };
-
-              var token = tokenHandler.CreateToken(tokenDescriptor);
-              var jwtTokenString = tokenHandler.WriteToken(token);
-
-              var tokenUpdater = new TokenUpdater
-              {
-                  UserId = userId,
-                  Token = jwtTokenString,
-                  Expires = tokenDescriptor.Expires.Value,
-                  Expired = false
-              };
-
-
-              Console.WriteLine($"Refresh token expires at: {tokenUpdater.Expires.ToLocalTime()}");
-
-              _db.TokenUpdate.Add(tokenUpdater);
-              await _db.SaveChangesAsync();
-
-              return tokenUpdater;
-          }
-
-
-          [HttpPost("refresh")]
-          public async Task<IActionResult> Refresh([FromBody] TokenUpdateRequestDto request)
-          {
-              if (string.IsNullOrEmpty(request.TokenUpdate))
-                  return BadRequest("Refresh token is required.");
-
-            //db-ből kiszedjük az update tokent 
-              var tokenRecord = await _db.TokenUpdate
-                  .FirstOrDefaultAsync(t => t.Token == request.TokenUpdate);
-
-              if (tokenRecord == null)
-                  return Unauthorized("Invalid refresh token.");
-
-              if (tokenRecord.Expired || tokenRecord.Expires < DateTime.UtcNow)
-                  return Unauthorized("Expired refresh token.");
-
-            //lekérdezzük a usert
-              var userIdInt = int.Parse(tokenRecord.UserId);
-              var user = await _userRepository.GetByIdAsync(userIdInt);
-              if (user == null)
-                  return Unauthorized("User not found.");
-
-            //új access token
-              var accessToken = GenerateJwtToken(user); 
-
-              tokenRecord.Expired = true;
-
-              var newRefreshToken = await GenerateRefreshToken(user.Id.ToString()); 
-              await _db.SaveChangesAsync();
-
-              return Ok(new
-              {
-                  AccessToken = accessToken,
-                  RefreshToken = newRefreshToken.Token
-              });
-          }
-        
+       
 
 
 
