@@ -2,6 +2,7 @@
   padding-left: 6px;
   padding-right: 6px;
   margin-right: var(--mantine-spacing-sm);
+  
 }
 
 .navbar {
@@ -9,23 +10,26 @@
   padding: var(--mantine-spacing-md);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #f1f1f1;
+  background-color: #212529;
 }
 
 .navbarMain {
   flex: 1;
+  background-color: #212529;
 }
 
 .header {
   padding-bottom: var(--mantine-spacing-md);
   margin-bottom: calc(var(--mantine-spacing-md) * 1.5);
   border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  
 }
 
 .footer {
   bottom: 0;
   position: absolute;
   margin-bottom: 10px;
+  background-color: #212529;
 }
 
 .link {

@@ -102,33 +102,6 @@ namespace api.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("api.Models.TokenUpdater", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Expired")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Expires")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TokenUpdate");
-                });
-
             modelBuilder.Entity("api.Models.Trainingprogram", b =>
                 {
                     b.Property<int>("Id")

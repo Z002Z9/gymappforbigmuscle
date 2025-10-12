@@ -4,7 +4,8 @@ import {
     PasswordInput,
     Group,
     Button,
-    Anchor, Divider
+    
+    
 } from "@mantine/core";
 import {useForm} from "@mantine/form";
 import {useNavigate} from "react-router-dom";
@@ -32,8 +33,9 @@ const Login = () => {
         login(form.values.email, form.values.password)
     }
 
-    return <AuthContainer>
+    return <AuthContainer>        
         <div>
+            
             <form onSubmit={form.onSubmit(submit)}>
                 <Stack>
                     <TextInput
@@ -43,6 +45,9 @@ const Login = () => {
                         key={form.key('email')}
                         radius="md"
                         {...form.getInputProps('email')}
+                        labelProps={{ style: { color: '#F1F3F5' } }}
+                        mt="xl"
+                        mb="md"
                     />
 
                     <PasswordInput
@@ -52,24 +57,23 @@ const Login = () => {
                         key={form.key('password')}
                         radius="md"
                         {...form.getInputProps('password')}
+                        labelProps={{ style: { color: '#F1F3F5' } }}
+                        mb="sm"
                     />
                 </Stack>
 
-                <Group justify="space-between" mt="xl">
-                    <Anchor component="button" type="button" c="dimmed" onClick={() => navigate('/forgot')}
-                            size="xs">
-                        Elfelejtetted a jelszavad?
-                    </Anchor>
-                    <Anchor component="button" type="button" c="dimmed" onClick={() => navigate('/registrate')}
-                        size="xs">
+                <Group mt="xl" gap="xl" justify="center">                    
+                    <Button 
+                        component="button" type="button" onClick={() => navigate('/registrate')} color="#ffffffff" radius="xl" c="black">
                         Regisztráció
-                    </Anchor>
-                    <Button type="submit" radius="xl">
+                    </Button>
+                    <Button type="submit" radius="xl" color="#121214" c="white">
                         Bejelentkezés
                     </Button>
                 </Group>
-                <Divider my="lg"/>
+                
             </form>
+            
         </div>
     </AuthContainer>
 }

@@ -5,6 +5,7 @@ const Header = ({opened, toggle}: any) => {
     return (
         <Flex
             justify="space-between"
+            bg="#212529"
             style={{display: "flex", alignItems: "center", height: "100%", paddingLeft: '20px', paddingRight: '20px'}}
         >
             <Image src="/logo.png" alt="img" w={80} px={5}/>

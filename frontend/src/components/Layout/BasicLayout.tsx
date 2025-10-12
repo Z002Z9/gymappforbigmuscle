@@ -16,11 +16,11 @@ const BasicLayout = () => {
                 collapsed: {mobile: !opened},
             }}
             padding="md"
-            style={{background: '#f9f9f9'}}
+            style={{background: '#121214'}}
         >
 
             <AppShell.Header
-                style={{boxShadow: '0px 5px 10px 0px rgba(82, 63, 105, 0.05)', border: '1px solid #f1f1f1'}}>
+                style={{boxShadow: '0px 5px 10px 0px rgba(82, 63, 105, 0.05)', border: '1px solid #121214'}}>
                 <Header opened={opened} toggle={toggle}></Header>
             </AppShell.Header>
 

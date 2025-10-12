@@ -59,10 +59,6 @@ namespace api.Migrations
                     table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
-            migrationBuilder.DropTable(
-            name: "TokenUpdate"
-);
-
             migrationBuilder.CreateTable(
                 name: "Trainingprograms",
                 columns: table => new
@@ -123,9 +119,6 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Exercises");
-
-            migrationBuilder.DropTable(
-                name: "TokenUpdate");
 
             migrationBuilder.DropTable(
                 name: "Trainingprograms");

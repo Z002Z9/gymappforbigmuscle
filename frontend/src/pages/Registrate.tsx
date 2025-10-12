@@ -13,6 +13,7 @@ import AuthContainer from "../components/AuthContainer.tsx";
 import axios from "axios";
 import { useState } from "react";
 
+
 const Registrate = () => {
 
     const navigate = useNavigate();
