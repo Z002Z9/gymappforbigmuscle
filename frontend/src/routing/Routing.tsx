@@ -47,6 +47,23 @@ const Routing = () => {
                 ))
             }
         </Route>
+        <Route
+            path="profile"
+            element={<PrivateRoute element={<BasicLayout />} />}>
+            <Route
+                path=""
+                element={<Navigate to="EditProfile" />}
+            />
+            {
+                routes.filter(route => route.isPrivate).map(route => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={<PrivateRoute element={route.component} />}
+                    />
+                ))
+            }
+        </Route>
     </Routes>
 }
 

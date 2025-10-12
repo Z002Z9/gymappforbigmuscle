@@ -44,9 +44,8 @@ namespace gymappforbigmuscle.Controllers
             return Ok(userDto);
         }
 
-        //kelleni fog hogy a local storageből be tudjuk kérni az adatait a formba a kcal kiszámításánál, tokent nem tudom dekódolni
         [HttpGet("ListUserByEmail/{email}")]
- 
+
 
         public async Task<IActionResult> GetByEmail([FromRoute] string email)
         {
@@ -58,6 +57,14 @@ namespace gymappforbigmuscle.Controllers
             return Ok(user.ToUserDto());
         }
 
+        //csak a regisztráláshoz kell hogy létezik-e az email
+        [AllowAnonymous]
+        [HttpGet("EmailExists")]
+        public async Task<IActionResult> EmailExists([FromQuery] string email)
+        {
+            var user = await _userRepo.GetByEmailAsync(email);
+            return Ok(user != null);
+        }
 
         [HttpGet("ListUserByID/{id}")]
         [Authorize(Roles = "1,2")] 
@@ -82,7 +89,7 @@ namespace gymappforbigmuscle.Controllers
 
             return Ok(user.ToUserDto());
         }
-
+        [AllowAnonymous]
         [HttpPost("Registration")]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {

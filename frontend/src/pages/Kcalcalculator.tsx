@@ -40,11 +40,11 @@ const Kcalcalculator: React.FC = () => {
             setError(null);
 
             try {
-               const fetchUrl = `https://localhost:7226/api/user/ListUserByEmail/${encodeURIComponent(email)}`;
+               const api = `https://localhost:7226/api/user/ListUserByEmail/${encodeURIComponent(email)}`;
 
-                console.log("Fetching:", fetchUrl);
+                console.log("Fetching:", api);
 
-                const response = await fetch(fetchUrl);
+                const response = await fetch(api);
 
                 if (!response.ok) {
                     if (response.status === 404)

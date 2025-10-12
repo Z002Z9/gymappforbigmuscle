@@ -60,6 +60,10 @@ const Login = () => {
                             size="xs">
                         Elfelejtetted a jelszavad?
                     </Anchor>
+                    <Anchor component="button" type="button" c="dimmed" onClick={() => navigate('/registrate')}
+                        size="xs">
+                        Regisztráció
+                    </Anchor>
                     <Button type="submit" radius="xl">
                         Bejelentkezés
                     </Button>

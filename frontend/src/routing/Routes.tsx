@@ -2,6 +2,8 @@ import Login from "../pages/Login.tsx";
 import ForgotPassword from "../pages/ForgotPassword.tsx";
 import Dashboard from "../pages/Dashboard.tsx";
 import Kcalcalculator from "../pages/Kcalcalculator.tsx";
+import EditProfile from "../pages/EditProfile.tsx";
+import Registrate from "../pages/Registrate.tsx";
 export const routes = [
     {
         path: "login",
@@ -22,5 +24,15 @@ export const routes = [
         path: "kcalcalculator",
         component: <Kcalcalculator/>,
         isPrivate: true
+    },
+    {
+        path: "profile",
+        component: <EditProfile/>,
+        isPrivate: true
+    },
+    {
+        path: "registrate",
+        component: <Registrate />,
+        isPrivate: false
     }
 ]
