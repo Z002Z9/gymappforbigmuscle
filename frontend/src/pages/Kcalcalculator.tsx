@@ -184,6 +184,8 @@ const Kcalcalculator: React.FC = () => {
                     border: "1px solid #ccc",
                     borderRadius: "10px",
                     flex: "1",
+                    backgroundColor: "#212529",
+                    color: "#ffffffff",
                 }}
             >
                 <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Felhasználói adatok</h2>
@@ -245,7 +247,7 @@ const Kcalcalculator: React.FC = () => {
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
                     </div>
-                    <Button type="button" onClick={handleCalculateAndFetchMacros} disabled={loading}>
+                    <Button type="button" onClick={handleCalculateAndFetchMacros} disabled={loading} color="black">
                         {loading ? "Számítás..." : "Kiszámítás"}
                     </Button>
 
@@ -262,6 +264,8 @@ const Kcalcalculator: React.FC = () => {
                     border: "1px solid #ccc",
                     borderRadius: "10px",
                     flex: "1",
+                    backgroundColor: "#212529",
+                    color: "#ffffffff",
                 }}
             >
                 <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Tápanyagok</h2>

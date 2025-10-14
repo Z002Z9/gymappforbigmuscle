@@ -5,7 +5,7 @@ import {jwtDecode, JwtPayload} from "jwt-decode";
 import api from "../api/api.ts";
 
 interface CustomJwtPayload extends JwtPayload {
-    [key: string]: any; // Allowing dynamic keys if necessary
+    [key: string]: any; 
 }
 
 const useAuth = () => {

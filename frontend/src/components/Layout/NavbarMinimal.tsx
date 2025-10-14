@@ -3,10 +3,9 @@ import {rem, Button, useMantineTheme} from "@mantine/core";
 import {
     IconUserCircle,
     IconLogout,
-    IconHome,
-    IconGitCherryPick,
+    IconHome,    
     IconLemon,
-    IconScale
+    
 } from "@tabler/icons-react";
 import classes from "./NavbarMinimalColored.module.css";
 import {useNavigate} from "react-router-dom";

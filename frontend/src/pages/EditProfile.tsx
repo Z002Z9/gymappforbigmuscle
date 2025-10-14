@@ -145,6 +145,8 @@ const EditProfile: React.FC = () => {
                     border: "1px solid #ccc",
                     borderRadius: "10px",
                     flex: "1",
+                    color: "#ffffffff",
+                    backgroundColor: "#212529",
                 }}
             >
                 <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Profil szerkesztése</h2>
@@ -253,7 +255,7 @@ const EditProfile: React.FC = () => {
                         />
                         </div>
 
-                    <Button type="button" onClick={handleUpdateUser} disabled={loading}>
+                    <Button type="button" onClick={handleUpdateUser} style={{ backgroundColor: "#121214" }} disabled={loading} >
                         {loading ? "Mentés folyamatban..." : "Mentés"}
                     </Button>
                 </form>

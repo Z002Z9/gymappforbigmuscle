@@ -8,7 +8,7 @@ const Header = ({opened, toggle}: any) => {
             bg="#212529"
             style={{display: "flex", alignItems: "center", height: "100%", paddingLeft: '20px', paddingRight: '20px'}}
         >
-            <Image src="/logo.png" alt="img" w={80} px={5}/>
+            <Image src="/logolight.png" alt="img" w={80} px={5}/>
             <Box>
                 <UserMenuDropdown/>
             </Box>
