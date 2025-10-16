@@ -24,6 +24,7 @@ namespace api.Controllers
             _context = context;
         }
         [HttpGet]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> GetAll()
         {
             var trainingprograms = await _trainingprogramRepo.GetAllAsync();
@@ -32,6 +33,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var trainingprogram = await _trainingprogramRepo.GetByIdAsync(id);
@@ -42,6 +44,7 @@ namespace api.Controllers
             return Ok(trainingprogram.ToTrainingprogramDto());
         }
         [HttpPost]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> Create([FromBody] CreateTrainingprogramRequestDto trainingprogramDto)
         {
 
@@ -52,6 +55,7 @@ namespace api.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [Authorize(Roles = "1")]
 
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateTrainingprogramRequestDto updateDto)
         {
@@ -68,6 +72,7 @@ namespace api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var trainingprogramModel = await _trainingprogramRepo.DeleteAsync(id);

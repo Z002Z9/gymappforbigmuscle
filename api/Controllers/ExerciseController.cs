@@ -20,6 +20,7 @@ namespace api.Controllers
             _context = context;
         }
         [HttpGet]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> GetAll()
         {
             var exercises = await _exerciseRepo.GetAllAsync();
@@ -28,6 +29,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var exercise = await _exerciseRepo.GetByIdAsync(id);
@@ -38,6 +40,7 @@ namespace api.Controllers
             return Ok(exercise.ToExerciseDto());
         }
         [HttpPost]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> Create([FromBody] CreateExerciseRequestDto exerciseDto)
         {
 
@@ -48,6 +51,7 @@ namespace api.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [Authorize(Roles = "1,2")]//van blacklist resze ezert user is kell
 
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateExerciseRequestDto updateDto)
         {
@@ -64,6 +68,7 @@ namespace api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var exerciseModel = await _exerciseRepo.DeleteAsync(id);

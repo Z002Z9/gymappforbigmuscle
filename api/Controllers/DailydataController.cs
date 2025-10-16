@@ -15,6 +15,7 @@ namespace api.Controllers
 {
     [Route("api/dailydata")]
     [ApiController]
+    
     public class DailydataController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
@@ -25,6 +26,7 @@ namespace api.Controllers
             _context = context;
         }
         [HttpGet]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> GetAll()
         {
             var dailydatas = await _dailydataRepo.GetAllAsync();
@@ -33,6 +35,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var dailydata = await _dailydataRepo.GetByIdAsync(id);
@@ -43,6 +46,7 @@ namespace api.Controllers
             return Ok(dailydata.ToDailydataDto());
         }
         [HttpPost]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> Create([FromBody] CreateDailydataRequestTrueDto dailydataDto)
         {
 
@@ -53,6 +57,7 @@ namespace api.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [Authorize(Roles = "1,2")]
 
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDailydataRequestDto updateDto)
         {
@@ -69,6 +74,7 @@ namespace api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Authorize(Roles = "1,2")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var dailydataModel = await _dailydataRepo.DeleteAsync(id);
