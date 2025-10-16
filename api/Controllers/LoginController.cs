@@ -1,6 +1,5 @@
 ﻿using api.Data;
 using api.Dtos.Login;
-using api.Dtos.TokenUpdate;
 using api.Interfaces;
 using api.Models;
 using gymappforbigmuscle.Interfaces;
