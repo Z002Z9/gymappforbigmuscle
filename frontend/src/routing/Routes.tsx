@@ -3,6 +3,7 @@ import Dashboard from "../pages/Dashboard.tsx";
 import Kcalcalculator from "../pages/Kcalcalculator.tsx";
 import EditProfile from "../pages/EditProfile.tsx";
 import Registrate from "../pages/Registrate.tsx";
+import DailyData from "../pages/DailyData.tsx"
 export const routes = [
     {
         path: "login",
@@ -28,5 +29,10 @@ export const routes = [
         path: "registrate",
         component: <Registrate />,
         isPrivate: false
+    },
+    {
+        path: "dailydata",
+        component: <DailyData />,
+        isPrivate: true
     }
 ]

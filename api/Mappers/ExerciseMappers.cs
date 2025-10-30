@@ -20,7 +20,7 @@ namespace api.Mappers
                 Youtubelink = exerciseModel.Youtubelink,
                 Setnumber = exerciseModel.Setnumber,
                 Repnumber = exerciseModel.Repnumber,
-                Injuryblacklist = exerciseModel.Injuryblacklist,
+                AffectedBodyParts = exerciseModel.AffectedBodyParts,
                 Bannedexercise = exerciseModel.Bannedexercise,
 
             };
@@ -35,7 +35,7 @@ namespace api.Mappers
                 Youtubelink = exerciseDto.Youtubelink,
                 Setnumber = exerciseDto.Setnumber,
                 Repnumber = exerciseDto.Repnumber,
-                Injuryblacklist = exerciseDto.Injuryblacklist,                   
+                AffectedBodyParts = exerciseDto.AffectedBodyParts,                   
                 
             };
 

@@ -17,6 +17,7 @@ interface UserData {
     carbs?: number;
     injury?: number[];
     allergys?: string[];
+    goal?: string;
 }
 
 const EditProfile: React.FC = () => {
@@ -37,6 +38,7 @@ const EditProfile: React.FC = () => {
         carbs: 0,
         injury: [],
         allergys: [],
+        goal: "",
     });
 
     const [loading, setLoading] = useState(false);
@@ -198,14 +200,33 @@ const EditProfile: React.FC = () => {
                     </div>
 
                     <div style={{ marginBottom: "15px" }}>
-                        <label>Nem</label><br />
-                        <input
-                            type="text"
+                        <label>Cél</label><br />
+                        <select
                             value={userData.gender}
                             onChange={(e) => handleChange("gender", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
-                        />
+                        >
+                            
+                            <option value="Férfi">Férfi</option>
+                            <option value="Nő">Nő</option>
+                          
+                        </select>
                     </div>
+
+                    <div style={{ marginBottom: "15px" }}>
+                        <label>Cél</label><br />
+                        <select
+                            value={userData.goal}
+                            onChange={(e) => handleChange("goal", e.target.value)}
+                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+                        >                      
+                            <option value="">Válassz egy célt</option>
+                            <option value="Tömegelés">Tömegelés</option>
+                            <option value="Fogyás">Fogyás</option>
+                            <option value="Jelenlegi szint tartása">Jelenlegi szint tartása</option>
+                        </select>
+                    </div>
+
 
                     <div style={{ marginBottom: "15px" }}>
                         <label>Edzések hetente</label><br />
@@ -215,7 +236,8 @@ const EditProfile: React.FC = () => {
                             onChange={(e) => handleChange("trainingsperweek", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
-                        </div>
+                    </div>
+
                         <div style={{ marginBottom: "15px" }}>
                             <label>Sérülések (vesszővel elválasztva)</label><br /> 
                             <input

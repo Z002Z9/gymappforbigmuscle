@@ -64,6 +64,25 @@ const Routing = () => {
                 ))
             }
         </Route>
+
+        <Route
+            path="dailydata"
+            element={<PrivateRoute element={<BasicLayout />} />}>
+            <Route
+                path=""
+                element={<Navigate to="DailyData" />}
+            />
+            {
+                routes.filter(route => route.isPrivate).map(route => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={<PrivateRoute element={route.component} />}
+                    />
+                ))
+            }
+        </Route>
+
     </Routes>
 }
 

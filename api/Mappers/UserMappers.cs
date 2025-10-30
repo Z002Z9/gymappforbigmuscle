@@ -29,7 +29,8 @@ namespace gymappforbigmuscle.Mappers
                 Trainingtype = userModel.Trainingtype,
                 Trainingsperweek = userModel.Trainingsperweek,
                 Weight = userModel.Weight,
-                Gender = userModel.Gender
+                Gender = userModel.Gender,
+                Goal=userModel.Goal
             };
         }
 
@@ -40,8 +41,8 @@ namespace gymappforbigmuscle.Mappers
                 Name = userDto.Name,
                 Email = userDto.Email,
                 Password = userDto.Password,
-                RoleId = userDto.RoleId  
-                
+                RoleId = userDto.RoleId,
+                 Goal = userDto.Goal
             };
 
 

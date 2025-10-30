@@ -58,6 +58,12 @@ export function NavbarMinimal({toggle}: any) {
 
         },
         {
+            icon: IconLemon,
+            label: "Napi adatok",
+            url: "dailydata",
+
+        },
+        {
             icon: IconUserCircle,
             label: "Profil",
             url: "profile",

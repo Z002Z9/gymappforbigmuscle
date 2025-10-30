@@ -142,7 +142,7 @@ namespace gymappforbigmuscle.Controllers
             user.Allergys = updateDto.Allergys;
             user.Trainingtype = updateDto.Trainingtype;
             user.Kcalintake = updateDto.Kcalintake;
-
+            user.Goal = updateDto.Goal;
             await _context.SaveChangesAsync();
 
             return Ok(user.ToUserDto());

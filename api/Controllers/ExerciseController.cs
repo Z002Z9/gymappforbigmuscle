@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using api.Mappers;
 using api.Interfaces;
 using api.Dtos.Exercise;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {

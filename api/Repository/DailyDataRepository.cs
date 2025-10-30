@@ -58,6 +58,7 @@ namespace api.Repository
             existingDailydata.Date = dailydataDto.Date;
             existingDailydata.Dailykcalintake = dailydataDto.Dailykcalintake;
             existingDailydata.Trainedtoday = dailydataDto.Trainedtoday;
+            existingDailydata.Trainingdaytype = dailydataDto.Trainingdaytype;
 
             await _context.SaveChangesAsync();
             return existingDailydata;

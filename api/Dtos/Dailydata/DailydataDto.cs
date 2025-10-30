@@ -12,5 +12,8 @@ namespace api.Dtos.Dailydata
         public int Weight { get; set; }
         public int Dailykcalintake { get; set; }
         public bool Trainedtoday { get; set; } = true;
+
+        public string Trainingdaytype { get; set; }= string.Empty;
+
     }
 }

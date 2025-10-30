@@ -8,7 +8,7 @@ using api.Mappers;
 using api.Dtos.Dailydata;
 using Microsoft.EntityFrameworkCore;
 using api.Interfaces;
-
+using Microsoft.AspNetCore.Authorization;
 
 //a swaggerekhez 
 namespace api.Controllers

@@ -11,10 +11,12 @@ interface UserData {
     fat?: number;
     carbs?: number;
     trainingsperweek?: number;
+    goal: string;
 }
 
 const Kcalcalculator: React.FC = () => {
     const { email, token } = useContext(AuthContext); // contextből vesszük az értékeket
+
     const [userData, setUserData] = useState<UserData>({
         weight: 0,
         height: 0,
@@ -23,7 +25,8 @@ const Kcalcalculator: React.FC = () => {
         protein: 0,
         fat: 0,
         carbs: 0,
-        trainingsperweek: 0
+        trainingsperweek: 0,
+        goal: ""
     });
 
     const [loading, setLoading] = useState(false);
@@ -33,6 +36,7 @@ const Kcalcalculator: React.FC = () => {
     //kivesszük az emailt és meghívjuk rá végpontot hogy lekérdezzük az adatait a felhasználónak
     useEffect(() => {
         console.log("EMAIL VALUE:", email);
+        console.log("Goal: ", userData.goal)
         if (!email) return;
 
         const fetchUserData = async () => {
@@ -56,6 +60,7 @@ const Kcalcalculator: React.FC = () => {
                 console.log("Fetched data:", data);
 
                 setUserData(data);
+
             } catch (err: unknown) {
                 if (err instanceof Error) setError(err.message);
                 else setError("Ismeretlen hiba történt.");
@@ -67,14 +72,17 @@ const Kcalcalculator: React.FC = () => {
         fetchUserData();
     }, [email, token]);
 
+
     const handleChange = (field: keyof UserData, value: string | number) => {
         setUserData((prev) => ({
             ...prev,
             [field]:
                 typeof value === "string" && !isNaN(Number(value)) ? Number(value) : value,
+
         }));
     };
 
+ 
 
     //kalória kiszámolása
     const handleCalculate = async () => {
@@ -161,8 +169,7 @@ const Kcalcalculator: React.FC = () => {
         }
     };
 
-
-    const handleCalculateAndFetchMacros = async () => {
+    const handleCalculateAndFetchMacros = async () => {        
         await handleCalculate();      
         await handleFetchMacros();   
     };
@@ -195,12 +202,22 @@ const Kcalcalculator: React.FC = () => {
 
                 <form>
                     <div style={{ marginBottom: "15px" }}>
+                        <label>Cél</label><br />
+                        <input
+                            readOnly 
+                           
+                            value={userData.goal || ""}
+                        //    onChange={(e) => handleChange("goal", e.target.value)}
+                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+                        />
+                    </div>
+                    <div style={{ marginBottom: "15px" }}>
                         <label>Súly</label><br />
                         <input
-                            readOnly //egyelőre readonly, ha valahogy össze akarjuk rakni az editbyuserid-val, akkor majd kivesszük
+                            readOnly 
                             type="number"
                             value={userData.weight}
-                            onChange={(e) => handleChange("weight", e.target.value)}
+                        //    onChange={(e) => handleChange("weight", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
                     </div>
@@ -211,7 +228,7 @@ const Kcalcalculator: React.FC = () => {
                             readOnly
                             type="number"
                             value={userData.height}
-                            onChange={(e) => handleChange("height", e.target.value)}
+                          //  onChange={(e) => handleChange("height", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
                     </div>
@@ -222,7 +239,7 @@ const Kcalcalculator: React.FC = () => {
                             readOnly
                             type="number"
                             value={userData.age}
-                            onChange={(e) => handleChange("age", e.target.value)}
+                          //  onChange={(e) => handleChange("age", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
                     </div>
@@ -233,7 +250,7 @@ const Kcalcalculator: React.FC = () => {
                             readOnly
                             type="text"
                             value={userData.gender}
-                            onChange={(e) => handleChange("gender", e.target.value)}
+                         //   onChange={(e) => handleChange("gender", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
                     </div>
@@ -243,7 +260,7 @@ const Kcalcalculator: React.FC = () => {
                             readOnly
                             type="number"
                             value={userData.trainingsperweek}
-                            onChange={(e) => handleChange("trainingsperweek", e.target.value)}
+                         //   onChange={(e) => handleChange("trainingsperweek", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
                     </div>

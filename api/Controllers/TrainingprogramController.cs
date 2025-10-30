@@ -9,6 +9,7 @@ using api.Dtos.Dailydata;
 using Microsoft.EntityFrameworkCore;
 using api.Interfaces;
 using api.Dtos.Trainingprogram;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {

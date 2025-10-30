@@ -61,7 +61,7 @@ namespace api.Repository
             existingExercise.Youtubelink = exerciseDto.Youtubelink;
             existingExercise.Setnumber = exerciseDto.Setnumber;
             existingExercise.Repnumber = exerciseDto.Repnumber;
-            existingExercise.Injuryblacklist = exerciseDto.Injuryblacklist;
+            existingExercise.AffectedBodyParts = exerciseDto.AffectedBodyParts;
             existingExercise.Bannedexercise = exerciseDto.Bannedexercise;
 
             await _context.SaveChangesAsync();

@@ -33,6 +33,8 @@ namespace api.Models
         public int Weight { get; set; }
         
         public string Gender { get; set; } = string.Empty;
-       
+
+        public string Goal { get; set; } = string.Empty;
+
     }
 }

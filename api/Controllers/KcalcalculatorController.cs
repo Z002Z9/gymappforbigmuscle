@@ -50,10 +50,11 @@ namespace api.Controllers
             if (user == null) return NotFound("User not found");
 
             double bmr;
-            if (user.Gender?.ToLower() == "male")
+            if (string.Equals(user.Gender, "Férfi", StringComparison.OrdinalIgnoreCase))
                 bmr = 10 * user.Weight + 6.25 * user.Height - 5 * user.Age + 5;
             else
                 bmr = 10 * user.Weight + 6.25 * user.Height - 5 * user.Age - 161;
+
 
 
             double activityFactor = 0;
@@ -79,7 +80,19 @@ namespace api.Controllers
             }
 
             var maintenanceCalories = bmr * activityFactor;
+
             int tmpkcal = Convert.ToInt32(Math.Round(maintenanceCalories));
+
+            if (user.Goal == "Tömegelés")
+            {
+                tmpkcal += 500;
+            }
+            else if (user.Goal=="Fogyás")
+            {
+                tmpkcal -= 500;
+            }
+            
+
             user.Kcalintake = tmpkcal;
             await _context.SaveChangesAsync();
 

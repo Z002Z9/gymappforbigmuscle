@@ -13,5 +13,7 @@ namespace api.Models
         public int Dailykcalintake { get; set; }
         public bool Trainedtoday { get; set; } = true;
 
+        public string Trainingdaytype { get; set; }= string.Empty;
+
     }
 }

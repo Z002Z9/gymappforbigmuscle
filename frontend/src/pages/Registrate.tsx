@@ -66,18 +66,21 @@ const Registrate = () => {
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     <TextInput
+                        required
                         label="Név"
                         placeholder="Név"
                         {...form.getInputProps("name")}
                     />
 
                     <TextInput
+                        required
                         label="E-mail"
                         placeholder="pelda@domain.hu"
                         {...form.getInputProps("email")}
                     />
 
                     <PasswordInput
+                        required
                         label="Jelszó"
                         placeholder="********"
                         {...form.getInputProps("password")}
