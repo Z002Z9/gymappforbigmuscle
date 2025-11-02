@@ -17,6 +17,7 @@ namespace api.Interfaces
         Task<Dailydata?> UpdateAsync(int id, UpdateDailydataRequestDto dailydataDto);
 
         Task<Dailydata?> DeleteAsync(int id);
+        
 
     }
 }

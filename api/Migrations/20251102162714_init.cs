@@ -12,22 +12,6 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Dailydatas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false),
-                    Weight = table.Column<int>(type: "int", nullable: false),
-                    Dailykcalintake = table.Column<int>(type: "int", nullable: false),
-                    Trainedtoday = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dailydatas", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Exercises",
                 columns: table => new
                 {
@@ -38,7 +22,7 @@ namespace api.Migrations
                     Youtubelink = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Setnumber = table.Column<int>(type: "int", nullable: false),
                     Repnumber = table.Column<int>(type: "int", nullable: false),
-                    Injuryblacklist = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AffectedBodyParts = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bannedexercise = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -93,7 +77,8 @@ namespace api.Migrations
                     Trainingtype = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Trainingsperweek = table.Column<int>(type: "int", nullable: false),
                     Weight = table.Column<int>(type: "int", nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Goal = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,6 +89,35 @@ namespace api.Migrations
                         principalTable: "Roles",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Dailydatas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    Dailykcalintake = table.Column<int>(type: "int", nullable: false),
+                    Trainedtoday = table.Column<bool>(type: "bit", nullable: false),
+                    Trainingdaytype = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dailydatas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Dailydatas_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dailydatas_UserId",
+                table: "Dailydatas",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",

@@ -9,6 +9,8 @@ using api.Dtos.Dailydata;
 using Microsoft.EntityFrameworkCore;
 using api.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using gymappforbigmuscle.Interfaces;
 
 //a swaggerekhez 
 namespace api.Controllers
@@ -20,11 +22,20 @@ namespace api.Controllers
     {
         private readonly ApplicationDBContext _context;
         private readonly IDailydataRepository _dailydataRepo;
-        public DailydataController(ApplicationDBContext context, IDailydataRepository dailydataRepo)
+        private readonly ApplicationDBContext _context2;
+
+        private readonly IUserRepository _userRepository;
+        public DailydataController(ApplicationDBContext context, IDailydataRepository dailydataRepo, ApplicationDBContext _context2, IUserRepository userRepository)
         {
             _dailydataRepo = dailydataRepo;
             _context = context;
+            _context2 = _context2;
+            _userRepository = userRepository;
         }
+        
+
+        
+
         [HttpGet]
         [Authorize(Roles = "1")]
         public async Task<IActionResult> GetAll()
@@ -49,10 +60,19 @@ namespace api.Controllers
         [Authorize(Roles = "1,2")]
         public async Task<IActionResult> Create([FromBody] CreateDailydataRequestTrueDto dailydataDto)
         {
+             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                    return Unauthorized();
 
-            var dailydataModel = dailydataDto.ToDailydataFromCreateDto();
-            await _dailydataRepo.CreateAsync(dailydataModel);
-            return CreatedAtAction(nameof(GetById), new { id = dailydataModel.Id }, dailydataModel.ToDailydataDto());
+                if (!int.TryParse(userIdClaim, out var userId))
+                    return BadRequest("Invalid user id claim.");
+
+                var dailyModel = dailydataDto.ToDailydataFromCreateDto(); // or your mapper
+                dailyModel.UserId = userId; // ensure FK points to existing user
+
+                await _dailydataRepo.CreateAsync(dailyModel); // or _context.Add/SaveChanges
+                return CreatedAtAction(nameof(GetById), new { id = dailyModel.Id }, dailyModel);
+            
         }
 
         [HttpPut]
@@ -82,9 +102,34 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-            
+
 
             return NoContent();
+        }
+        //just added
+        //[HttpGet("user/{userId}")]
+        [HttpGet("user/me")]
+        [Authorize(Roles = "1,2")]
+        public async Task<IActionResult> GetByUserId()
+        {
+            var userId2 = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+
+            if (userId2 == null)
+                return Unauthorized("You must be logged in");
+
+
+            var user = await _userRepository.GetByIdAsync(userId2);
+
+            if (user == null) return NotFound("User not found");
+
+            var items = await _context.Dailydatas
+                .Where(d => d.UserId == userId2)
+                .OrderByDescending(d => d.Date)
+                .ToListAsync();
+
+            var dtos = items.Select(d => d.ToDailydataDto());
+            return Ok(dtos);
         }
        
     }

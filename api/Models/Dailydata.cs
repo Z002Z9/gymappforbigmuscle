@@ -13,7 +13,10 @@ namespace api.Models
         public int Dailykcalintake { get; set; }
         public bool Trainedtoday { get; set; } = true;
 
-        public string Trainingdaytype { get; set; }= string.Empty;
+        public string Trainingdaytype { get; set; } = string.Empty;
+        
+        public int UserId { get; set; }
+        public User? User { get; set; }
 
     }
 }
