@@ -63,5 +63,29 @@ namespace api.Repository
             await _context.SaveChangesAsync();
             return existingDailydata;
         }
+        public async Task<Dailydata> GetClosestDailyDataForUserAsync(int userId)
+            {
+                
+                var allUserItems = await _context.Dailydatas
+                    .Where(d => d.UserId == userId)
+                    .ToListAsync();
+
+                
+                if (allUserItems == null || !allUserItems.Any())
+                {
+                    return null; 
+                }
+
+                
+                DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+                
+                var closestItem = allUserItems
+                    .OrderBy(d => Math.Abs(d.Date.DayNumber - today.DayNumber))
+                    .First(); 
+
+                
+                return closestItem;
+            }
     }
 }

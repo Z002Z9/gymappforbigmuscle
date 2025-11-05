@@ -21,5 +21,7 @@ namespace gymappforbigmuscle.Interfaces
 
         Task<User?> GetByEmailAsync(string email);
 
+        
+
     }
 }

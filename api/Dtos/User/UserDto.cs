@@ -21,7 +21,7 @@ namespace gymappforbigmuscle.Dtos.User
 
         public int Height { get; set; }
 
-        public List<int> Injury { get; set; } = new List<int>();
+        public List<string> Injury { get; set; } = new List<string>();
 
         public List<string> Allergys { get; set; } = new List<string>();
 
