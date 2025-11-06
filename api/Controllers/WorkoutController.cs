@@ -19,6 +19,8 @@ using api.Models;
 using api.Repository;
 using System.Security.Cryptography.X509Certificates;
 
+//fullbody works,upper-lower works,
+
 
 namespace api.Controllers
 {
@@ -26,7 +28,7 @@ namespace api.Controllers
     [Route("api/generateworkout")]
     public class WorkoutController : ControllerBase
     {
-         
+
         private readonly ApplicationDBContext _context;
 
         private readonly IUserRepository _userRepository;
@@ -40,7 +42,7 @@ namespace api.Controllers
             _dailydataRepository = dailydataRepository;
             _context = context;
         }
-        
+
 
         [HttpGet("workoutgenerator")]
         [Authorize(Roles = "1,2")]
@@ -53,18 +55,42 @@ namespace api.Controllers
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return NotFound("User not found");
 
-            
+
             Dailydata closestData = await _dailydataRepository.GetClosestDailyDataForUserAsync(userId);
             List<Exercise> workoutPlan = new List<Exercise>();
             string message = "";
+
+            string mytrainingDayType = "fullbody";//kell ertekadas mert kulonben hisztizik a code
+
+            if (closestData == null)
+            {
+
+                switch (user.Trainingtype)
+                {
+                    case "ppl":
+                        mytrainingDayType = "leg";
+                        break;
+                    case "upper-lower":
+                        mytrainingDayType = "lower";
+                        break;
+                    case "fullbody":
+                        mytrainingDayType = "fullbody";
+                        break;
+                }
+            }
+            else
+            {
+
+                mytrainingDayType = closestData.Trainingdaytype;
+            }
 
 
             List<string> criticalInjuries = new List<string>
             {
                 "váll", "könyök", "csukló", "alsóhát", "térdek", "boka"
             };
-            
-            
+
+
             if (user.Injury.Any(i => i == "váll" || i == "könyök" || i == "csukló") && user.Injury.Any(i => i == "térdek" || i == "boka" || i == "alsóhát"))
             {
                 return Ok(new { Message = "You have too many injuries to train safely. Please consult a medical professional." });
@@ -72,17 +98,17 @@ namespace api.Controllers
 
             switch (user.Trainingtype)
             {
-                case "ppl":                    
-                    workoutPlan = GeneratePPLWorkout(closestData.Trainingdaytype, user.Injury); 
+                case "ppl":
+                    workoutPlan = GeneratePPLWorkout(mytrainingDayType, user.Injury);
                     break;
-                case "fullbody":                   
-                    workoutPlan = GenerateFullBodyWorkout(user.Injury); 
+                case "fullbody":
+                    workoutPlan = GenerateFullBodyWorkout(user.Injury);
                     break;
-                case "upper-lower":                   
-                    workoutPlan = GenerateUpperLowerWorkout(closestData.Trainingdaytype, user.Injury); 
+                case "upper-lower":
+                    workoutPlan = GenerateUpperLowerWorkout(mytrainingDayType, user.Injury);
                     break;
-            }         
-            
+            }
+
 
             return Ok(new { Exercises = workoutPlan, Message = message });
         }
@@ -131,18 +157,18 @@ namespace api.Controllers
             else
             {
                 targetMuscles = new List<string> { "quads", "hamstrings", "calves", "glutes" };
-            } 
+            }
 
             return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
         }
 
         private List<Exercise> GenerateFullBodyWorkout(List<string> injuries)
         {
-            var targetMuscles = new List<string> 
-            { 
-                "back", "biceps", "shoulders", "quads", "hamstrings", "calves", "glutes","chest", "shoulders", "triceps"
+            var targetMuscles = new List<string>
+            {
+                "back", "biceps", "shoulders", "quads", "hamstrings", "calves", "glutes","chest", "triceps"
             };
-            
+
             return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
         }
 
@@ -170,28 +196,29 @@ namespace api.Controllers
             return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
         }
 
-        private List<Exercise> GetAppropriateExercises(List<string> targetMuscles, List<string> injuries, List<Exercise> alreadyChosen) 
+        private List<Exercise> GetAppropriateExercises(List<string> targetMuscles, List<string> injuries, List<Exercise> alreadyChosen)
         {
             List<Exercise> exercises = new List<Exercise>();
-            
-            
+
+
             var alreadyChosenIds = alreadyChosen.Select(e => e.Id).ToList();
-            
+
             foreach (var muscle in targetMuscles)
             {
-                var muscleExercises = _context.Exercises                    
+                var muscleExercises = _context.Exercises                 
                     .Where(e => e.Mainmuscle == muscle && 
-                                !e.Bannedexercise &&
-                                !injuries.Any(i => e.AffectedBodyParts.Contains(i)) &&
-                                !alreadyChosenIds.Contains(e.Id) 
-                                )
-                    .Take(2)
+                        !e.Bannedexercise &&
+                        !injuries.Any(i => e.AffectedBodyParts.Contains(i)) &&
+                        !alreadyChosenIds.Contains(e.Id) 
+                        )
+                    .OrderBy(x => Guid.NewGuid()) // <-- ADD THIS LINE
+                    .Take(2) 
                     .ToList();
-                    
+
                 exercises.AddRange(muscleExercises);
-                
-                
-                alreadyChosenIds.AddRange(muscleExercises.Select(e => e.Id)); 
+
+
+                alreadyChosenIds.AddRange(muscleExercises.Select(e => e.Id));
             }
 
             if (exercises.Count > 6)
@@ -199,20 +226,20 @@ namespace api.Controllers
                 exercises = exercises.OrderBy(x => Guid.NewGuid()).Take(6).ToList();
             }
             if (exercises.Count < 5)
-                {
-                    int missingCount = 5 - exercises.Count;
-                    var compensationExercises = GetCompensationExercises(injuries, missingCount, targetMuscles, exercises);
-                    exercises.AddRange(compensationExercises);
-                }           
-            
+            {
+                int missingCount = 5 - exercises.Count;
+                var compensationExercises = GetCompensationExercises(injuries, missingCount, targetMuscles, exercises);
+                exercises.AddRange(compensationExercises);
+            }
+
 
             return exercises;
         }
-        
+
         private List<Exercise> GetCompensationExercises(List<string> injuries, int count, List<string> musclestoworkout, List<Exercise> alreadychosen)
         {
             int N = musclestoworkout.Count;
-            List<Exercise> exercises = new List<Exercise>(); 
+            List<Exercise> exercises = new List<Exercise>();
 
             var idsToAvoid = alreadychosen.Select(e => e.Id).ToList();
 
@@ -230,21 +257,21 @@ namespace api.Controllers
                                 !e.Bannedexercise &&
                                 !injuries.Any(j => e.AffectedBodyParts.Contains(j)) &&
                                 !idsToAvoid.Contains(e.Id)
-                               
+
                                 )
-                    .OrderBy(x => Guid.NewGuid()) 
-                    .FirstOrDefault(); 
-                    
+                    .OrderBy(x => Guid.NewGuid())
+                    .FirstOrDefault();
+
                 if (chosenExercise != null)
                 {
-                    exercises.Add(chosenExercise);                    
+                    exercises.Add(chosenExercise);
                     idsToAvoid.Add(chosenExercise.Id);
-                }                
+                }
             }
 
             return exercises;
         }
-        
 
-    } 
+
+    }
 }
