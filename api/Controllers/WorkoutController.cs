@@ -19,7 +19,7 @@ using api.Models;
 using api.Repository;
 using System.Security.Cryptography.X509Certificates;
 
-//fullbody works,upper-lower works,
+
 
 
 namespace api.Controllers
@@ -99,13 +99,13 @@ namespace api.Controllers
             switch (user.Trainingtype)
             {
                 case "ppl":
-                    workoutPlan = GeneratePPLWorkout(mytrainingDayType, user.Injury);
+                    workoutPlan = await GeneratePPLWorkout(mytrainingDayType, user.Injury,userId);
                     break;
                 case "fullbody":
-                    workoutPlan = GenerateFullBodyWorkout(user.Injury);
+                    workoutPlan = await GenerateFullBodyWorkout(user.Injury,userId);
                     break;
                 case "upper-lower":
-                    workoutPlan = GenerateUpperLowerWorkout(mytrainingDayType, user.Injury);
+                    workoutPlan = await GenerateUpperLowerWorkout(mytrainingDayType, user.Injury,userId);
                     break;
             }
 
@@ -113,7 +113,7 @@ namespace api.Controllers
             return Ok(new { Exercises = workoutPlan, Message = message });
         }
 
-        private List<Exercise> GeneratePPLWorkout(string dayType, List<string> injuries)
+        private async Task<List<Exercise>> GeneratePPLWorkout(string dayType, List<string> injuries, int userId)
         {
             //"váll", "könyök", "csukló", "alsóhát", "térdek", "boka" 
             List<string> targetMuscles = new List<string>();
@@ -121,21 +121,25 @@ namespace api.Controllers
             {
                 //push
                 targetMuscles = new List<string> { "chest", "shoulders", "triceps" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "push");
             }
             else if (dayType == "push" && !injuries.Any(i => i == "váll" || i == "könyök" || i == "csukló"))
             {
                 //pull
                 targetMuscles = new List<string> { "back", "biceps", "shoulders" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "pull");
             }
             else if (dayType == "pull" && !injuries.Any(i => i == "térdek" || i == "boka" || i == "alsóhát"))
             {
                 //leg
                 targetMuscles = new List<string> { "quads", "hamstrings", "calves", "glutes" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "leg");
             }
             else if (dayType == "push" || dayType == "leg" && injuries.Any(i => i == "váll" || i == "könyök" || i == "csukló") && !injuries.Any(i => i == "térdek" || i == "boka" || i == "alsóhát"))
             {
                 //leg mert mashoz serult
                 targetMuscles = new List<string> { "quads", "hamstrings", "calves", "glutes" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "leg");
             }
             else if (dayType == "pull" && injuries.Any(i => i == "térdek" || i == "boka" || i == "alsóhát") && !injuries.Any(i => i == "váll" || i == "könyök" || i == "csukló"))
             {
@@ -144,53 +148,63 @@ namespace api.Controllers
                 if (bit == 0)
                 {
                     targetMuscles = new List<string> { "back", "biceps", "shoulders" };
+                    await UpdateOrCreateTodayDailydataAsync(userId, "pull");
                 }
                 else
                 {
                     targetMuscles = new List<string> { "chest", "shoulders", "triceps" };
+                    await UpdateOrCreateTodayDailydataAsync(userId, "push");
                 }
             }
             else if (!injuries.Any(i => i == "váll" || i == "könyök" || i == "csukló"))
             {
                 targetMuscles = new List<string> { "chest", "shoulders", "triceps" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "push");
             }
             else
             {
                 targetMuscles = new List<string> { "quads", "hamstrings", "calves", "glutes" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "leg");
             }
 
             return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
         }
 
-        private List<Exercise> GenerateFullBodyWorkout(List<string> injuries)
+        private async Task<List<Exercise>> GenerateFullBodyWorkout(List<string> injuries, int userId)
         {
             var targetMuscles = new List<string>
             {
                 "back", "biceps", "shoulders", "quads", "hamstrings", "calves", "glutes","chest", "triceps"
             };
 
+            await UpdateOrCreateTodayDailydataAsync(userId, "fullbody");
+
             return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
         }
 
-        private List<Exercise> GenerateUpperLowerWorkout(string dayType, List<string> injuries)
+        private async Task<List<Exercise>> GenerateUpperLowerWorkout(string dayType, List<string> injuries, int userId)
         {
             List<string> targetMuscles = new List<string>();
 
             if (dayType == "upper" && !injuries.Any(i => i == "térdek" || i == "boka" || i == "alsóhát"))
             {
                 targetMuscles = new List<string> { "quads", "hamstrings", "calves", "glutes", "core" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "lower");
             }
             else if (dayType == "lower" && !injuries.Any(i => i == "váll" || i == "könyök" || i == "csukló"))
             {
                 targetMuscles = new List<string> { "chest", "back", "shoulders", "biceps", "triceps" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "upper");
             }
             else if (!injuries.Any(i => i == "térdek" || i == "boka" || i == "alsóhát"))
             {
                 targetMuscles = new List<string> { "quads", "hamstrings", "calves", "glutes", "core" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "lower");
             }
             else
             {
                 targetMuscles = new List<string> { "chest", "back", "shoulders", "biceps", "triceps" };
+                await UpdateOrCreateTodayDailydataAsync(userId, "upper");
             }
 
             return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
@@ -211,7 +225,7 @@ namespace api.Controllers
                         !injuries.Any(i => e.AffectedBodyParts.Contains(i)) &&
                         !alreadyChosenIds.Contains(e.Id) 
                         )
-                    .OrderBy(x => Guid.NewGuid()) // <-- ADD THIS LINE
+                    .OrderBy(x => Guid.NewGuid()) 
                     .Take(2) 
                     .ToList();
 
@@ -271,6 +285,43 @@ namespace api.Controllers
 
             return exercises;
         }
+
+         private async Task UpdateOrCreateTodayDailydataAsync(int userId, string trainingDayType)
+            {
+                var today = DateOnly.FromDateTime(DateTime.Now);
+
+                
+                var existing = await _context.Dailydatas
+                    .FirstOrDefaultAsync(d => d.UserId == userId && d.Date == today);
+
+                if (existing != null)
+                {
+                    existing.Trainedtoday = true;
+                    existing.Trainingdaytype = trainingDayType;
+                    _context.Dailydatas.Update(existing);
+                }
+                else
+                {
+                    
+                    var last = await _context.Users
+                        .Where(d => d.Id == userId)                        
+                        .FirstOrDefaultAsync();
+
+                    var newDaily = new Dailydata
+                    {
+                        
+                        Weight = last?.Weight ?? 0,
+                        Dailykcalintake = last?.Kcalintake ?? 0,
+                        Trainingdaytype = trainingDayType,
+                        UserId = userId
+                    };
+
+                    await _context.Dailydatas.AddAsync(newDaily);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
 
 
     }
