@@ -168,13 +168,28 @@ const Kcalcalculator: React.FC = () => {
             console.log("Loading finished");
         }
     };
+    /* weight: 0,
+        height: 0,
+        age: 0,
+        gender: "",
+        protein: 0,
+        fat: 0,
+        carbs: 0,
+        trainingsperweek: 0,
+        goal: ""*/
 
-    const handleCalculateAndFetchMacros = async () => {        
-        await handleCalculate();      
-        await handleFetchMacros();   
+    const handleCalculateAndFetchMacros = async () => {
+        if (userData.age == 0 || userData.weight == 0 || userData.height == 0 || userData.gender == "" || userData.trainingsperweek == 0 || userData.goal == "") {
+            setError("Kérem töltse ki az összes felhasználói adatot!");
+            return;
+        }
+        else { 
+            await handleCalculate();      
+            await handleFetchMacros();   
+        }
     };
 
-
+    
     return (
         <div
             style={{
@@ -264,6 +279,7 @@ const Kcalcalculator: React.FC = () => {
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         />
                     </div>
+
                     <Button type="button" onClick={handleCalculateAndFetchMacros} disabled={loading} color="black">
                         {loading ? "Számítás..." : "Kiszámítás"}
                     </Button>

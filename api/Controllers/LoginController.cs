@@ -30,6 +30,7 @@ namespace api.Controllers
             _userRepository = userRepository;
             _config = config;
             _db = db; //adatbáizishoz kell a token update miatt
+
         }
 
         [HttpPost]

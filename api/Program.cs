@@ -61,6 +61,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+
+
+
 // Repositoryk
 builder.Services.AddScoped<IDailydataRepository, DailyDataRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
@@ -100,6 +104,29 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 var app = builder.Build();
+
+//teszt az adatbázishoz és felhasználókhoz
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+
+    // Ellenõrizzük a connection stringet
+    Console.WriteLine("Adatbázis: " + context.Database.GetDbConnection().ConnectionString);
+
+    // Lekérdezzük a felhasználókat
+    var users = context.Users.ToList();
+
+    // Kiírjuk a felhasználók számát
+    Console.WriteLine("Felhasználók száma: " + users.Count);
+
+    //nevük, emailjük
+    foreach (var user in users)
+    {
+        Console.WriteLine(user.Name + " - " + user.Email);
+    }
+}
+
+
 
 
 app.UseCors("AllowReactApp");

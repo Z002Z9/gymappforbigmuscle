@@ -1,12 +1,10 @@
 ﻿import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "@mantine/core";
-
 interface UserData {
     id?: number;
     name: string;
     email?: string;
-    password: string;
     age: number;
     weight: number;
     height: number;
@@ -18,6 +16,7 @@ interface UserData {
     injury?: number[];
     allergys?: string[];
     goal?: string;
+    newPassword?: string; // új jelszó mező
 }
 
 const EditProfile: React.FC = () => {
@@ -27,7 +26,6 @@ const EditProfile: React.FC = () => {
         id: undefined,
         name: "",
         email: "",
-        password: "",
         age: 0,
         weight: 0,
         height: 0,
@@ -39,6 +37,7 @@ const EditProfile: React.FC = () => {
         injury: [],
         allergys: [],
         goal: "",
+        newPassword: "", // alapból üres
     });
 
     const [loading, setLoading] = useState(false);
@@ -55,8 +54,6 @@ const EditProfile: React.FC = () => {
 
             try {
                 const api = `https://localhost:7226/api/user/ListUserByEmail/${encodeURIComponent(email)}`;
-                console.log("Fetching:", api);
-
                 const response = await fetch(api, {
                     method: "GET",
                     headers: {
@@ -71,8 +68,6 @@ const EditProfile: React.FC = () => {
                 }
 
                 const data: UserData = await response.json();
-                console.log("Fetched data:", data);
-
                 setUserData(data);
             } catch (err: unknown) {
                 if (err instanceof Error) setError(err.message);
@@ -92,7 +87,7 @@ const EditProfile: React.FC = () => {
         }));
     };
 
-    //save 
+    // Mentés/update
     const handleUpdateUser = async () => {
         if (!userData.id) {
             setError("Nincs ilyen id-jú felhasználó");
@@ -104,6 +99,13 @@ const EditProfile: React.FC = () => {
         setSuccess(false);
 
         try {
+            //nem küldjük a régi jelszót, ha nincs új
+            const updateData: Partial<UserData> = { ...userData };
+
+            if (!updateData.newPassword) {
+                delete updateData.newPassword;
+            }
+
             const response = await fetch(
                 `https://localhost:7226/api/user/EditUserByID/${userData.id}`,
                 {
@@ -112,7 +114,7 @@ const EditProfile: React.FC = () => {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify(userData),
+                    body: JSON.stringify(updateData),
                 }
             );
 
@@ -120,6 +122,8 @@ const EditProfile: React.FC = () => {
                 throw new Error("Sikertelen adatfrissítés");
             }
 
+            const updatedUser: UserData = await response.json();
+            setUserData(updatedUser);
             setSuccess(true);
         } catch (err: unknown) {
             if (err instanceof Error) setError(err.message);
@@ -129,7 +133,7 @@ const EditProfile: React.FC = () => {
         }
     };
 
-    const [allergysInput, setAllergysInput] = useState("");
+    const [allergysInput, setAllergysInput] = useState<string>("");
 
     return (
         <div
@@ -170,6 +174,17 @@ const EditProfile: React.FC = () => {
                     </div>
 
                     <div style={{ marginBottom: "15px" }}>
+                        <label>Új jelszó</label>
+                        <input
+                            type="password"
+                            value={userData.newPassword || ""}
+                            onChange={(e) => handleChange("newPassword", e.target.value)}
+                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+                        />
+                    </div>
+
+
+                    <div style={{ marginBottom: "15px" }}>
                         <label>Életkor</label><br />
                         <input
                             type="number"
@@ -200,13 +215,13 @@ const EditProfile: React.FC = () => {
                     </div>
 
                     <div style={{ marginBottom: "15px" }}>
-                        <label>Cél</label><br />
+                        <label>Nem</label><br />
                         <select
                             value={userData.gender}
                             onChange={(e) => handleChange("gender", e.target.value)}
                             style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
                         >
-                            
+                            <option value="">Válassz egy nemet</option>
                             <option value="Férfi">Férfi</option>
                             <option value="Nő">Nő</option>
                           

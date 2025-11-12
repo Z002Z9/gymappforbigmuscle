@@ -100,35 +100,7 @@ const DailyData: React.FC = () => {
 
                 <form>
 
-                    <div style={{ marginBottom: "15px" }}>
-                        <label>Dátum</label><br />
-                        <input
-                            type="string"
-                            value={userData.date}
-                            onChange={(e) =>
-                                setUserData((prev) => ({
-                                    ...prev,
-                                    date: e.target.value,
-                                }))
-                            }
-                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
-                        />
-                    </div>
 
-                    <div style={{ marginBottom: "15px" }}>
-                        <label>Edzett ma?</label><br />
-                        <input
-                            type="checkbox"
-                            checked={userData.trainedtoday}
-                            onChange={(e) =>
-                                setUserData((prev) => ({
-                                    ...prev,
-                                    trainedtoday: e.target.checked,
-                                }))
-                            }
-                            style={{ transform: "scale(1.5)" }}
-                        />
-                    </div>
 
                     <div style={{ marginBottom: "15px" }}>
                         <label>Edzés típusa</label><br />
@@ -175,7 +147,20 @@ const DailyData: React.FC = () => {
                         />
                     </div>
 
-
+                    <div style={{ marginBottom: "15px" }}>
+                        <label>Edzettél ma?</label><br />
+                        <input
+                            type="checkbox"
+                            checked={userData.trainedtoday}
+                            onChange={(e) =>
+                                setUserData((prev) => ({
+                                    ...prev,
+                                    trainedtoday: e.target.checked,
+                                }))
+                            }
+                            style={{ transform: "scale(1.5)" }}
+                        />
+                    </div>
                    
                 </form>
             </div>

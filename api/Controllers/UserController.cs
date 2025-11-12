@@ -26,8 +26,10 @@ namespace gymappforbigmuscle.Controllers
         private readonly IUserRepository _userRepo;
         public UserController(ApplicationDBContext context, IUserRepository userRepo)
         {
+            
             _userRepo = userRepo;
             _context = context;
+            Console.WriteLine("CSATLAKOZOTT ADATBÁZIS: " + _context.Database.GetDbConnection().ConnectionString);
         }
 
         [HttpGet("ListAllUser")]
@@ -113,25 +115,26 @@ namespace gymappforbigmuscle.Controllers
 
             var currentUserId = int.Parse(currentUserIdClaim);
 
-            //az admin bárkiét szerkesztheti, a user meg csak a sajátját
+            // az admin bárkiét szerkesztheti, a user meg csak a sajátját
             if (!User.IsInRole("1") && id != currentUserId)
             {
                 return Forbid();
             }
+
             var user = await _userRepo.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            
-            if (!string.IsNullOrEmpty(updateDto.Password))
+            // Jelszó változtatás csak akkor történik, ha van új jelszó
+            if (!string.IsNullOrWhiteSpace(updateDto.NewPassword))
             {
                 var hasher = new PasswordHasher<User>();
-                user.Password = hasher.HashPassword(user, updateDto.Password);
+                user.Password = hasher.HashPassword(user, updateDto.NewPassword);
             }
 
-            user.Name = updateDto.Name; 
+            user.Name = updateDto.Name;
             user.Email = updateDto.Email;
             user.Age = updateDto.Age;
             user.Height = updateDto.Height;
@@ -143,10 +146,12 @@ namespace gymappforbigmuscle.Controllers
             user.Trainingtype = updateDto.Trainingtype;
             user.Kcalintake = updateDto.Kcalintake;
             user.Goal = updateDto.Goal;
+
             await _context.SaveChangesAsync();
 
             return Ok(user.ToUserDto());
         }
+
 
 
         [HttpDelete("DeleteUserByID/{id}")]

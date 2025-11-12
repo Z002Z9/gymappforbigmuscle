@@ -13,6 +13,7 @@ namespace gymappforbigmuscle.Dtos.User
         public int? RoleId { get; set; }
 
         public string Goal { get; set; } = string.Empty;
-        
+
+     
     }
 }

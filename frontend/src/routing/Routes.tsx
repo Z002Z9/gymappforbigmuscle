@@ -3,7 +3,8 @@ import Dashboard from "../pages/Dashboard.tsx";
 import Kcalcalculator from "../pages/Kcalcalculator.tsx";
 import EditProfile from "../pages/EditProfile.tsx";
 import Registrate from "../pages/Registrate.tsx";
-import DailyData from "../pages/DailyData.tsx"
+import DailyData from "../pages/DailyData.tsx";
+import GenerateWorkoutPlan from "../pages/GenerateWorkoutPlan.tsx";
 export const routes = [
     {
         path: "login",
@@ -33,6 +34,11 @@ export const routes = [
     {
         path: "dailydata",
         component: <DailyData />,
+        isPrivate: true
+    },
+    {
+        path: "generateworkoutplan",
+        component: <GenerateWorkoutPlan />,
         isPrivate: true
     }
 ]
