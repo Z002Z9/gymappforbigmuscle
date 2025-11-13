@@ -1,168 +1,104 @@
 ﻿import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-
 interface UserData {
     id?: number;
     date: string;
     weight: number;
     dailykcalintake: number;
     trainedtoday: boolean;
-    trainindaytype: string;
-
-
+    trainingdaytype: string;
 }
 
 const DailyData: React.FC = () => {
-    const { email, token } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
-    const [userData, setUserData] = useState<UserData>({
-        id: 0,
-        date: "",
-        weight: 0,
-        dailykcalintake: 0,
-        trainedtoday: false,
-        trainindaytype: "",
-
-    });
-
+    const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
+
+    const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
 
     useEffect(() => {
-        if (!email) return;
+        if (!token) return;
 
-        const fetchUserData = async () => {
+        const fetchDailyData = async () => {
             setLoading(true);
             setError(null);
-            setSuccess(false);
 
             try {
-                const api = `https://localhost:7226/api/user/ListUserByEmail/${encodeURIComponent(email)}`;
-                console.log("Fetching:", api);
-
-                const response = await fetch(api, {
+                const res = await fetch(`/api/dailydata/user/me`, {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 });
 
-                if (!response.ok) {
-                    if (response.status === 404)
-                        throw new Error("Nincs ilyen id !");
-                    throw new Error("Hiba az adatok lekérése során.");
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`API hiba: ${res.status} ${text}`);
                 }
 
-                const data: UserData = await response.json();
-                console.log("Fetched data:", data);
+                const data: UserData[] = await res.json();
 
-                setUserData(data);
+                // Keresés a mai nap adatára
+                const todayData = data.find(d => d.date === today);
+
+                if (todayData) {
+                    setUserData({ ...todayData, trainedtoday: true });
+                } else {
+                    setUserData({
+                        id: 0,
+                        date: today,
+                        weight: 0,
+                        dailykcalintake: 0,
+                        trainedtoday: false,
+                        trainingdaytype: "",
+                    });
+                }
             } catch (err: unknown) {
-                if (err instanceof Error) setError(err.message);
-                else setError("Ismeretlen hiba történt.");
+                setError(err instanceof Error ? err.message : "Ismeretlen hiba történt.");
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchUserData();
-    }, [email, token]);
+        fetchDailyData();
+    }, [token]);
 
-   
+    if (loading) return <p style={{ color: "blue" }}>Betöltés...</p>;
+    if (error) return <p style={{ color: "red" }}>{error}</p>;
+    if (!userData) return null;
 
     return (
         <div
             style={{
                 display: "flex",
-                justifyContent: "center",
-                gap: "40px",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "20px",
                 padding: "20px",
+                color: "#fff",
+                backgroundColor: "#212529",
+                borderRadius: "10px",
+                maxWidth: "400px",
+                margin: "0 auto"
             }}
         >
-            <div
-                style={{
-                    maxWidth: "400px",
-                    padding: "20px",
-                    border: "1px solid #ccc",
-                    borderRadius: "10px",
-                    flex: "1",
-                    color: "#ffffffff",
-                    backgroundColor: "#212529",
-                }}
-            >
-                <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Profil szerkesztése</h2>
+            <h2 style={{ textAlign: "center" }}>Mai adatok</h2>
 
-                {loading && <p style={{ color: "blue" }}>Betöltés...</p>}
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {success && <p style={{ color: "green" }}>A profil sikeresen frissítve!</p>}
-
-                <form>
-
-
-
-                    <div style={{ marginBottom: "15px" }}>
-                        <label>Edzés típusa</label><br />
-                        <input
-                            type="text"
-                            value={userData.trainindaytype}
-                            onChange={(e) =>
-                                setUserData((prev) => ({
-                                    ...prev,
-                                    trainindaytype: e.target.value,
-                                }))
-                            }
-                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: "15px" }}>
-                        <label>Súly</label><br />
-                        <input
-                            type="number"
-                            value={userData.weight}
-                            onChange={(e) =>
-                                setUserData((prev) => ({
-                                    ...prev,
-                                    weight: Number(e.target.value),
-                                }))
-                            }
-                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: "15px" }}>
-                        <label>Napi kalória bevitel</label><br />
-                        <input
-                            type="number"
-                            value={userData.dailykcalintake}
-                            onChange={(e) =>
-                                setUserData((prev) => ({
-                                    ...prev,
-                                    dailykcalintake: Number(e.target.value),
-                                }))
-                            }
-                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: "15px" }}>
-                        <label>Edzettél ma?</label><br />
-                        <input
-                            type="checkbox"
-                            checked={userData.trainedtoday}
-                            onChange={(e) =>
-                                setUserData((prev) => ({
-                                    ...prev,
-                                    trainedtoday: e.target.checked,
-                                }))
-                            }
-                            style={{ transform: "scale(1.5)" }}
-                        />
-                    </div>
-                   
-                </form>
+            <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                <strong>Súly:</strong> <span>{userData.weight} kg</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                <strong>Napi kalória:</strong> <span>{userData.dailykcalintake} kcal</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                <strong>Edzettél ma:</strong>
+                <span style={{ color: userData.trainedtoday ? "green" : "red" }}>
+                    {userData.trainedtoday ? "Igen" : "Nem"}
+                </span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                <strong>Edzés típusa:</strong> <span>{userData.trainingdaytype || "-"}</span>
             </div>
         </div>
     );

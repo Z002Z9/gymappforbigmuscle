@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@mantine/charts": "^8.3.7",
+    "@mantine/core": "^8.3.7",
     "jwt-decode": "^4.0.0",
     "react-router-dom": "^7.9.3"
   }

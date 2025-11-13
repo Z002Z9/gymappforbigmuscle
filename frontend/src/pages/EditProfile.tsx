@@ -1,6 +1,8 @@
 ﻿import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "@mantine/core";
+import { MultiSelect } from '@mantine/core';
+
 interface UserData {
     id?: number;
     name: string;
@@ -13,10 +15,11 @@ interface UserData {
     protein?: number;
     fat?: number;
     carbs?: number;
-    injury?: number[];
+    injury?: string[];
     allergys?: string[];
     goal?: string;
     newPassword?: string; // új jelszó mező
+    trainingtype?: string;
 }
 
 const EditProfile: React.FC = () => {
@@ -38,6 +41,7 @@ const EditProfile: React.FC = () => {
         allergys: [],
         goal: "",
         newPassword: "", // alapból üres
+        trainingtype:"",
     });
 
     const [loading, setLoading] = useState(false);
@@ -242,6 +246,20 @@ const EditProfile: React.FC = () => {
                         </select>
                     </div>
 
+                    <div style={{ marginBottom: "15px" }}>
+                        <label>Edzés típus</label><br />
+                        <select
+                            value={userData.trainingtype}
+                            onChange={(e) => handleChange("trainingtype", e.target.value)}
+                            style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+                        >
+                            <option value="">Válassz egy edzéstípust</option>
+                            <option value="ppl">Push-Pull-Leg</option>
+                            <option value="upper-lower">Upper Lower</option>
+                            <option value="fullbody">Full Body</option>
+
+                        </select>
+                    </div>
 
                     <div style={{ marginBottom: "15px" }}>
                         <label>Edzések hetente</label><br />
@@ -254,21 +272,16 @@ const EditProfile: React.FC = () => {
                     </div>
 
                         <div style={{ marginBottom: "15px" }}>
-                            <label>Sérülések (vesszővel elválasztva)</label><br /> 
-                            <input
-                                type="text" 
-                                value={(userData.injury || []).join(", ")} 
-                                onChange={(e) =>
-                                    handleChange("injury",e.target.value.split(",").map((s) => Number(s.trim())) 
-                                    )
-                                }
-                                style={{
-                                    width: "100%",
-                                    padding: "8px",
-                                    borderRadius: "5px",
-                                    border: "1px solid #ccc",
-                                }}
-                            />
+                            <label>Sérülések</label><br /> 
+                        <MultiSelect
+                            value={userData.injury ?? []}
+                            placeholder="Válaszd ki a sérüléseidet"
+                            data={["váll", "könyök", "csukló", "alsóhát", "térdek", "boka"]}
+                            searchable
+                            onChange={(val) => setUserData({ ...userData, injury: val })}
+                        />
+
+
                         </div>
 
                         <div style={{ marginBottom: "15px" }}>
