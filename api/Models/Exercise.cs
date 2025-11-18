@@ -17,9 +17,7 @@ namespace api.Models
 
      //   public List<int> Injuryblacklist { get; set; } = new List<int>();
 
-        public List<string> AffectedBodyParts {  get; set; } = new List<string>();
-
-        public bool Bannedexercise { get; set; } = false;
+        public List<string> AffectedBodyParts {  get; set; } = new List<string>();        
 
         
     }

@@ -21,7 +21,7 @@ namespace api.Mappers
                 Setnumber = exerciseModel.Setnumber,
                 Repnumber = exerciseModel.Repnumber,
                 AffectedBodyParts = exerciseModel.AffectedBodyParts,
-                Bannedexercise = exerciseModel.Bannedexercise,
+                
 
             };
         }

@@ -62,7 +62,6 @@ namespace api.Repository
             existingExercise.Setnumber = exerciseDto.Setnumber;
             existingExercise.Repnumber = exerciseDto.Repnumber;
             existingExercise.AffectedBodyParts = exerciseDto.AffectedBodyParts;
-            existingExercise.Bannedexercise = exerciseDto.Bannedexercise;
 
             await _context.SaveChangesAsync();
             return existingExercise;

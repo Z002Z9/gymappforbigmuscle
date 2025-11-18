@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20251112211341_updatedatabase")]
-    partial class updatedatabase
+    [Migration("20251118193833_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,9 +70,6 @@ namespace api.Migrations
                     b.PrimitiveCollection<string>("AffectedBodyParts")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Bannedexercise")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Mainmuscle")
                         .IsRequired()
@@ -153,6 +150,10 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.PrimitiveCollection<string>("Allergys")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.PrimitiveCollection<string>("Bannedexercises")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

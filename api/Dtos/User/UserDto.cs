@@ -36,5 +36,7 @@ namespace gymappforbigmuscle.Dtos.User
         public string Gender { get; set; } = string.Empty;
 
         public string Goal { get; set; } = string.Empty;
+
+        public List<string> Bannedexercises { get; set; } = new List<string>();
     }
 }

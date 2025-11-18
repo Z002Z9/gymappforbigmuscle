@@ -99,13 +99,13 @@ namespace api.Controllers
             switch (user.Trainingtype)
             {
                 case "ppl":
-                    workoutPlan = await GeneratePPLWorkout(mytrainingDayType, user.Injury,userId);
+                    workoutPlan = await GeneratePPLWorkout(mytrainingDayType, user.Injury,userId, user.Bannedexercises);
                     break;
                 case "fullbody":
-                    workoutPlan = await GenerateFullBodyWorkout(user.Injury,userId);
+                    workoutPlan = await GenerateFullBodyWorkout(user.Injury,userId, user.Bannedexercises);
                     break;
                 case "upper-lower":
-                    workoutPlan = await GenerateUpperLowerWorkout(mytrainingDayType, user.Injury,userId);
+                    workoutPlan = await GenerateUpperLowerWorkout(mytrainingDayType, user.Injury,userId, user.Bannedexercises);
                     break;
             }
 
@@ -113,7 +113,7 @@ namespace api.Controllers
             return Ok(new { Exercises = workoutPlan, Message = message });
         }
 
-        private async Task<List<Exercise>> GeneratePPLWorkout(string dayType, List<string> injuries, int userId)
+        private async Task<List<Exercise>> GeneratePPLWorkout(string dayType, List<string> injuries, int userId, List<string> bannedExercises)
         {
             //"váll", "könyök", "csukló", "alsóhát", "térdek", "boka" 
             List<string> targetMuscles = new List<string>();
@@ -167,10 +167,10 @@ namespace api.Controllers
                 await UpdateOrCreateTodayDailydataAsync(userId, "leg");
             }
 
-            return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
+            return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>(),bannedExercises);
         }
 
-        private async Task<List<Exercise>> GenerateFullBodyWorkout(List<string> injuries, int userId)
+        private async Task<List<Exercise>> GenerateFullBodyWorkout(List<string> injuries, int userId, List<string> bannedExercises)
         {
             var targetMuscles = new List<string>
             {
@@ -179,10 +179,10 @@ namespace api.Controllers
 
             await UpdateOrCreateTodayDailydataAsync(userId, "fullbody");
 
-            return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
+            return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>(),bannedExercises);
         }
 
-        private async Task<List<Exercise>> GenerateUpperLowerWorkout(string dayType, List<string> injuries, int userId)
+        private async Task<List<Exercise>> GenerateUpperLowerWorkout(string dayType, List<string> injuries, int userId, List<string> bannedExercises)
         {
             List<string> targetMuscles = new List<string>();
 
@@ -207,10 +207,10 @@ namespace api.Controllers
                 await UpdateOrCreateTodayDailydataAsync(userId, "upper");
             }
 
-            return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>());
+            return GetAppropriateExercises(targetMuscles, injuries, new List<Exercise>(),bannedExercises);
         }
 
-        private List<Exercise> GetAppropriateExercises(List<string> targetMuscles, List<string> injuries, List<Exercise> alreadyChosen)
+        private List<Exercise> GetAppropriateExercises(List<string> targetMuscles, List<string> injuries, List<Exercise> alreadyChosen, List<string> bannedExercises)
         {
             List<Exercise> exercises = new List<Exercise>();
 
@@ -221,7 +221,7 @@ namespace api.Controllers
             {
                 var muscleExercises = _context.Exercises                 
                     .Where(e => e.Mainmuscle == muscle && 
-                        !e.Bannedexercise &&
+                        !bannedExercises.Contains(e.Name) &&
                         !injuries.Any(i => e.AffectedBodyParts.Contains(i)) &&
                         !alreadyChosenIds.Contains(e.Id) 
                         )
@@ -242,7 +242,7 @@ namespace api.Controllers
             if (exercises.Count < 5)
             {
                 int missingCount = 5 - exercises.Count;
-                var compensationExercises = GetCompensationExercises(injuries, missingCount, targetMuscles, exercises);
+                var compensationExercises = GetCompensationExercises(injuries, missingCount, targetMuscles, exercises, bannedExercises);
                 exercises.AddRange(compensationExercises);
             }
 
@@ -250,7 +250,7 @@ namespace api.Controllers
             return exercises;
         }
 
-        private List<Exercise> GetCompensationExercises(List<string> injuries, int count, List<string> musclestoworkout, List<Exercise> alreadychosen)
+        private List<Exercise> GetCompensationExercises(List<string> injuries, int count, List<string> musclestoworkout, List<Exercise> alreadychosen,List<string> bannedExercises)
         {
             int N = musclestoworkout.Count;
             List<Exercise> exercises = new List<Exercise>();
@@ -268,7 +268,7 @@ namespace api.Controllers
 
                 var chosenExercise = _context.Exercises
                     .Where(e => e.Mainmuscle == targetMuscle &&
-                                !e.Bannedexercise &&
+                                !bannedExercises.Contains(e.Name) &&
                                 !injuries.Any(j => e.AffectedBodyParts.Contains(j)) &&
                                 !idsToAvoid.Contains(e.Id)
 

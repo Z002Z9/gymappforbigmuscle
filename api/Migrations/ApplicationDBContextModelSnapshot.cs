@@ -68,9 +68,6 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Bannedexercise")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Mainmuscle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -150,6 +147,10 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.PrimitiveCollection<string>("Allergys")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.PrimitiveCollection<string>("Bannedexercises")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

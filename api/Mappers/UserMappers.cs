@@ -30,7 +30,8 @@ namespace gymappforbigmuscle.Mappers
                 Trainingsperweek = userModel.Trainingsperweek,
                 Weight = userModel.Weight,
                 Gender = userModel.Gender,
-                Goal=userModel.Goal
+                Goal=userModel.Goal,
+                Bannedexercises= userModel.Bannedexercises
             };
         }
 

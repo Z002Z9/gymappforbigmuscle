@@ -22,8 +22,7 @@ namespace api.Migrations
                     Youtubelink = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Setnumber = table.Column<int>(type: "int", nullable: false),
                     Repnumber = table.Column<int>(type: "int", nullable: false),
-                    AffectedBodyParts = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bannedexercise = table.Column<bool>(type: "bit", nullable: false)
+                    AffectedBodyParts = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,7 +77,8 @@ namespace api.Migrations
                     Trainingsperweek = table.Column<int>(type: "int", nullable: false),
                     Weight = table.Column<int>(type: "int", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Goal = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Goal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bannedexercises = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

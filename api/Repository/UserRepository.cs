@@ -76,6 +76,7 @@ namespace gymappforbigmuscle.Repository
             existingUser.Weight = userDto.Weight;
             existingUser.Gender = userDto.Gender;
             existingUser.Goal = userDto.Goal;
+            existingUser.Bannedexercises = userDto.Bannedexercises;
 
 
             await _context.SaveChangesAsync();
