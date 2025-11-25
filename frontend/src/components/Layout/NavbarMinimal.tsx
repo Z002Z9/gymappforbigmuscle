@@ -7,6 +7,7 @@ import {
     IconLemon,
     IconBarbell,
     IconChartBarPopular,
+    IconAdjustmentsCog,
     
 } from "@tabler/icons-react";
 import classes from "./NavbarMinimalColored.module.css";
@@ -69,6 +70,12 @@ export function NavbarMinimal({toggle}: any) {
             icon: IconBarbell,
             label: "Edzésterv készítése",
             url: "generateworkoutplan",
+
+        },
+        {
+            icon: IconAdjustmentsCog,
+            label: "Gyakorlat feketelistára tétele",
+            url: "bannexercise",
 
         },
         {

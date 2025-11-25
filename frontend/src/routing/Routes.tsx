@@ -4,6 +4,7 @@ import Kcalcalculator from "../pages/Kcalcalculator.tsx";
 import EditProfile from "../pages/EditProfile.tsx";
 import Registrate from "../pages/Registrate.tsx";
 import DailyData from "../pages/DailyData.tsx";
+import Bannexercises from "../pages/Bannedexercise.tsx";
 import GenerateWorkoutPlan from "../pages/GenerateWorkoutPlan.tsx";
 export const routes = [
     {
@@ -39,6 +40,11 @@ export const routes = [
     {
         path: "generateworkoutplan",
         component: <GenerateWorkoutPlan />,
+        isPrivate: true
+    },
+    {
+        path: "bannexercise",
+        component: <Bannexercises />,
         isPrivate: true
     }
 ]
