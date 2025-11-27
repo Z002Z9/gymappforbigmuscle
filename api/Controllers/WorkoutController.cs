@@ -93,7 +93,7 @@ namespace api.Controllers
 
             if (user.Injury.Any(i => i == "váll" || i == "könyök" || i == "csukló") && user.Injury.Any(i => i == "térdek" || i == "boka" || i == "alsóhát"))
             {
-                return Ok(new { Message = "You have too many injuries to train safely. Please consult a medical professional." });
+                return Ok(new { Message = "Túl sérült vagy, hogy edz." });
             }
 
             switch (user.Trainingtype)

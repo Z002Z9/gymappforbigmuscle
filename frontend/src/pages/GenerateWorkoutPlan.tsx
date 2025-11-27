@@ -75,7 +75,7 @@ const GenerateWorkoutPlan: React.FC = () => {
         <div style={{ marginTop: 20 }}>
             <Button onClick={generateWorkout} disabled={loading || !token}>
                 {loading ? <Loader size="xs" /> : "Edzésterv generálása"}
-            </Button>
+            </Button>            
 
             {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
 
@@ -89,6 +89,7 @@ const GenerateWorkoutPlan: React.FC = () => {
                     borderRadius: "8px",
                     overflow: "hidden"
                 }}>
+                
                     <thead style={{ backgroundColor: "#2a2a2a" }}>
                         <tr>
                             <th style={{ padding: 12, textAlign: "left" }}>Név</th>
